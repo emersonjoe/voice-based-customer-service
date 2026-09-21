@@ -1,0 +1,11 @@
+bin/
+# the framework's build cache and the runner's scratch; the rest of .trilha/ is committed
+.trilha/cache/
+.trilha/runs/
+
+# dados de atendimento gerados em execução — nunca versionar
+data/
+# segredos e ambiente local
+.env
+.env.*
+!.env.example

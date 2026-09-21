@@ -1,0 +1,7 @@
+# trilha vendor. name version sha256 file url
+# Written by trilha vendor; checked by trilha vendor --check.
+@elevenlabs/client 1.25.0 0da3f4f44cd576eb1de9ca513f316a629cdad2682d51c9963129672701fac1c3 public/vendor/elevenlabs-client.js https://esm.sh/@elevenlabs/client@1.25.0/es2022/client.bundle.mjs
+node/process es2022 b642fdc3e00fee50d8255ac32df63d4a273e0b72b4921eacde90dfe12132871b public/vendor/elevenlabs-process.js https://esm.sh/node/process.mjs
+node/events es2022 e9355c70af3fd66916bd1a70279be73bdda9f0cd599341fc5f9f1bc971ba93c6 public/vendor/elevenlabs-events.js https://esm.sh/node/events.mjs
+node/tty es2022 c66ff4b406bad449bfb2ced355f15badf16f4d9e035d2d300e33b5aeee64e3be public/vendor/elevenlabs-tty.js https://esm.sh/node/tty.mjs
+node/async_hooks es2022 b7862dbfba8bbbca956f19e4e08280b529e4b27468779775a9093aef8c92dc1d public/vendor/elevenlabs-async-hooks.js https://esm.sh/node/async_hooks.mjs

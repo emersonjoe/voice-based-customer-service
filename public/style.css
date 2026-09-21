@@ -1,0 +1,487 @@
+/* WaveHub · voice-based-customer-service
+   Identidade extraída de wavehub.dev: gradiente roxo→fúcsia sobre quase
+   preto, acentos amarelos, superfícies discretas. As variáveis seguem o
+   contrato do kit ui (shadcn v4); o que é específico da marca vive nas
+   classes .wh-*. */
+
+:root {
+  --radius: 0.75rem;
+  --primary: #d946ef;
+  --primary-foreground: #ffffff;
+  --ring: #d946ef;
+  --wh-violet: #9333ea;
+  --wh-fuchsia: #d946ef;
+  --wh-yellow: #facc15;
+  --wh-ink: #0f0f13;
+  --wh-grad: linear-gradient(92deg, var(--wh-violet), var(--wh-fuchsia));
+}
+
+.dark {
+  --background: #0f0f13;
+  --foreground: #f4f4f5;
+  --card: #16161c;
+  --card-foreground: #f4f4f5;
+  --popover: #16161c;
+  --popover-foreground: #f4f4f5;
+  --primary: #d946ef;
+  --primary-foreground: #1c0122;
+  --secondary: #1f1f27;
+  --secondary-foreground: #e4e4e7;
+  --muted: #1c1c23;
+  --muted-foreground: #9ca3af;
+  --accent: #241b2e;
+  --accent-foreground: #f0abfc;
+  --border: rgb(255 255 255 / 9%);
+  --input: rgb(255 255 255 / 13%);
+  --ring: #d946ef;
+  --sidebar: #131318;
+  --sidebar-foreground: #f4f4f5;
+  --sidebar-primary: #d946ef;
+  --sidebar-primary-foreground: #1c0122;
+  --sidebar-accent: #241b2e;
+  --sidebar-accent-foreground: #f0abfc;
+  --sidebar-border: rgb(255 255 255 / 8%);
+}
+
+/* ---------- marca ---------- */
+
+.ui-brand {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: var(--wh-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.wh-chip {
+  background: var(--wh-grad);
+  color: #fff;
+  border: 0;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.wh-grad {
+  background: var(--wh-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.wh-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.25rem;
+}
+
+.wh-sub {
+  color: var(--muted-foreground);
+  max-width: 46rem;
+}
+
+/* ---------- hero ---------- */
+
+.wh-hero {
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.wh-hero-badge {
+  align-self: flex-start;
+  background: color-mix(in oklab, var(--wh-fuchsia) 14%, transparent);
+  color: var(--accent-foreground);
+  border: 1px solid color-mix(in oklab, var(--wh-fuchsia) 35%, transparent);
+  font-weight: 500;
+}
+
+.dark .wh-hero {
+  background:
+    radial-gradient(48rem 22rem at 12% -8%, rgb(147 51 234 / 20%), transparent 60%),
+    radial-gradient(40rem 20rem at 88% -12%, rgb(217 70 239 / 16%), transparent 60%);
+  margin: 0 calc(50% - 50vw);
+  padding-left: max(1.5rem, calc(50vw - 40rem));
+  padding-right: max(1.5rem, calc(50vw - 40rem));
+  border-bottom: 1px solid var(--border);
+}
+
+.wh-hero .ui-h1 {
+  font-size: clamp(2.1rem, 5vw, 3.3rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  max-width: 44rem;
+}
+
+.wh-cta {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.4rem;
+}
+
+/* ---------- fluxos + widget ---------- */
+
+.wh-flows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.wh-flows .ui-card {
+  flex: 1;
+}
+
+.wh-fluxo-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.7rem;
+  background: var(--wh-grad);
+  color: #fff;
+  flex: none;
+}
+
+.wh-fluxo-texto {
+  color: var(--muted-foreground);
+}
+
+.wh-voice-card {
+  height: fit-content;
+}
+
+.wh-voice {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* orbe de voz */
+
+.wh-orb {
+  height: 84px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+  padding-bottom: 20px;
+  border-radius: 1rem;
+  background:
+    radial-gradient(10rem 6rem at 50% 120%, color-mix(in oklab, var(--wh-fuchsia) 16%, transparent), transparent);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.wh-bar {
+  width: 5px;
+  border-radius: 3px;
+  height: 10px;
+  background: var(--wh-grad);
+  transition: height 90ms ease-out;
+}
+
+.wh-voice[data-state="ativo"] .wh-bar {
+  box-shadow: 0 0 12px color-mix(in oklab, var(--wh-fuchsia) 55%, transparent);
+}
+
+.wh-voice[data-state="conectando"] .wh-bar {
+  animation: wh-espera 1.1s ease-in-out infinite;
+}
+
+@keyframes wh-espera {
+  0%, 100% { height: 10px; opacity: 0.5; }
+  50% { height: 34px; opacity: 1; }
+}
+
+.wh-status {
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+  min-height: 1.4em;
+}
+
+.wh-controls {
+  display: flex;
+  justify-content: center;
+}
+
+.wh-controls .ui-btn:not([disabled]) {
+  min-width: 12rem;
+}
+
+/* feed de ferramentas */
+
+.wh-feed-wrap {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+}
+
+.wh-feed-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+  margin-bottom: 0.5rem;
+}
+
+.wh-feed {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 9rem;
+  overflow-y: auto;
+}
+
+.wh-feed li {
+  font-size: 0.9rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--wh-violet) 10%, transparent);
+  animation: wh-entra 0.25s ease-out;
+}
+
+.wh-feed li.wh-feed-empty {
+  background: transparent;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+@keyframes wh-entra {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.wh-textrow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.wh-textrow .ui-input {
+  flex: 1;
+}
+
+/* ---------- como funciona ---------- */
+
+.wh-como {
+  margin-top: 1rem;
+}
+
+.wh-passo {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.wh-passo-n {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 999px;
+  background: var(--wh-grad);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.wh-passo-texto {
+  color: var(--muted-foreground);
+  font-size: 0.92rem;
+}
+
+/* ---------- roteiro da demo ---------- */
+
+.wh-demo-linha {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: flex-start;
+}
+
+.wh-demo-roteiro {
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+
+.wh-demo-dica {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  color: var(--muted-foreground);
+  font-size: 0.92rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.9rem;
+  margin-top: 0.2rem;
+}
+
+.wh-demo-dica svg {
+  color: var(--wh-yellow);
+  flex: none;
+}
+
+/* ---------- painel ---------- */
+
+.wh-facetas {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.wh-facetas .ui-select {
+  width: auto;
+  min-width: 11rem;
+}
+
+.wh-eventos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.wh-evento {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.55rem 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.wh-evento:last-child {
+  border-bottom: 0;
+}
+
+.wh-evento-resumo {
+  color: var(--muted-foreground);
+  flex: 1;
+  min-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wh-evento-origem {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+}
+
+.wh-quando {
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* badges de status/tipo/prioridade */
+
+.wh-badge {
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.wh-status-aberto { background: color-mix(in oklab, var(--wh-yellow) 16%, transparent); color: var(--wh-yellow); border-color: color-mix(in oklab, var(--wh-yellow) 40%, transparent); }
+.wh-status-em_atendimento { background: color-mix(in oklab, var(--wh-fuchsia) 14%, transparent); color: var(--accent-foreground); border-color: color-mix(in oklab, var(--wh-fuchsia) 40%, transparent); }
+.wh-status-resolvido { background: var(--success-background); color: var(--success-foreground); border-color: var(--success-border); }
+
+.wh-prio-alta { background: var(--destructive-background); color: var(--destructive-foreground); border-color: var(--destructive-border); }
+.wh-prio-media { background: var(--warning-background); color: var(--warning-foreground); border-color: var(--warning-border); }
+.wh-prio-baixa { background: var(--secondary); color: var(--secondary-foreground); border-color: var(--border); }
+
+/* ---------- detalhe do atendimento ---------- */
+
+.wh-descricao {
+  white-space: pre-wrap;
+}
+
+.wh-dados {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.7rem 1.2rem;
+}
+
+.wh-dado {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.wh-dado-rotulo {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-foreground);
+}
+
+.wh-dado-valor {
+  overflow-wrap: anywhere;
+}
+
+.wh-acao {
+  display: inline-flex;
+}
+
+/* ---------- página do agente ---------- */
+
+.wh-passo-guia {
+  margin: 1.2rem 0 0.4rem;
+}
+
+.wh-pre {
+  max-height: 26rem;
+  overflow: auto;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  background: var(--wh-ink);
+  color: #e4e4e7;
+  border-radius: var(--radius);
+  padding: 1rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.wh-rota {
+  margin-top: 0.6rem;
+}
+
+/* ---------- rodapé ---------- */
+
+.wh-footer {
+  margin: 3rem auto 2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
+}
+
+.wh-footer a {
+  color: var(--accent-foreground);
+}
+
+/* ---------- responsivo ---------- */
+
+@media (max-width: 900px) {
+  .wh-flows { order: 2; }
+  .wh-voice-card { order: 1; }
+}

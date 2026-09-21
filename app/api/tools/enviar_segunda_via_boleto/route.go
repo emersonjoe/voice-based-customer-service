@@ -18,6 +18,7 @@ import (
 type resposta struct {
 	Status         string `json:"status"`
 	Protocolo      string `json:"protocolo,omitempty"`
+	Cliente        string `json:"cliente,omitempty"`
 	Mensagem       string `json:"mensagem"`
 	Valor          string `json:"valor,omitempty"`
 	Vencimento     string `json:"vencimento,omitempty"`
@@ -53,8 +54,11 @@ func POST(c *trilha.Ctx) error {
 
 	fatura, ok := cliente.FaturaAberta(time.Now())
 	if !ok {
-		return c.JSON(http.StatusOK, falha("sem_fatura_aberta",
-			"Boa notícia: não há nenhuma fatura em aberto neste cadastro, então não é preciso segunda via."))
+		return c.JSON(http.StatusOK, resposta{
+			Status:   "sem_fatura_aberta",
+			Cliente:  cliente.Nome,
+			Mensagem: "Cadastro de " + cliente.Nome + " localizado. Boa notícia: não há nenhuma fatura em aberto, então não é preciso segunda via.",
+		})
 	}
 
 	// O e-mail do cadastro é o destino padrão; um e-mail informado na
@@ -86,11 +90,13 @@ func POST(c *trilha.Ctx) error {
 
 	c.Log().Info("ferramenta enviar_segunda_via_boleto: envio registrado", "protocolo", att.Protocolo)
 	venc := fatura.Vencimento.Format("02/01/2006")
-	mensagem := "Segunda via enviada para " + destino + ". O valor é " + atendimento.BRL(fatura.ValorCentavos) +
+	mensagem := "Cadastro de " + cliente.Nome + " localizado. Segunda via enviada para " + destino +
+		". O valor é " + atendimento.BRL(fatura.ValorCentavos) +
 		", com vencimento em " + venc + ". O protocolo do atendimento é " + att.Protocolo + "."
 	return c.JSON(http.StatusOK, resposta{
 		Status:         "sucesso",
 		Protocolo:      att.Protocolo,
+		Cliente:        cliente.Nome,
 		Valor:          atendimento.BRL(fatura.ValorCentavos),
 		Vencimento:     venc,
 		LinhaDigitavel: fatura.LinhaDigitavel,

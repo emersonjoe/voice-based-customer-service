@@ -17,6 +17,7 @@ import (
 type resposta struct {
 	Status    string `json:"status"`
 	Protocolo string `json:"protocolo,omitempty"`
+	Cliente   string `json:"cliente,omitempty"`
 	Mensagem  string `json:"mensagem"`
 	Prazo     string `json:"prazo,omitempty"`
 }
@@ -57,9 +58,11 @@ func POST(c *trilha.Ctx) error {
 
 	fatura, temFatura := cliente.FaturaAberta(time.Now())
 	if !temFatura {
-		return c.JSON(http.StatusOK, falha("sem_debitos",
-			"Não encontrei faturas vencidas neste cadastro. Se o sinal continua fora, o caminho é abrir um "+
-				"chamado técnico em vez de um religue."))
+		return c.JSON(http.StatusOK, resposta{
+			Status:   "sem_debitos",
+			Cliente:  cliente.Nome,
+			Mensagem: "Cadastro de " + cliente.Nome + " localizado, sem faturas vencidas. Se o sinal continua fora, o caminho é abrir um chamado técnico em vez de um religue.",
+		})
 	}
 
 	detalhes := map[string]string{
@@ -79,8 +82,9 @@ func POST(c *trilha.Ctx) error {
 	return c.JSON(http.StatusOK, resposta{
 		Status:    "solicitacao_registrada",
 		Protocolo: att.Protocolo,
+		Cliente:   cliente.Nome,
 		Prazo:     "até 2 horas úteis",
-		Mensagem:  "Pedido de religue registrado no protocolo " + att.Protocolo + ". A equipe técnica religa o sinal em até 2 horas úteis.",
+		Mensagem:  "Cadastro de " + cliente.Nome + " localizado. Pedido de religue registrado no protocolo " + att.Protocolo + ". A equipe técnica religa o sinal em até 2 horas úteis.",
 	})
 }
 

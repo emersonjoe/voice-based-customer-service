@@ -1,0 +1,117 @@
+{
+  "seq": {
+    "BV": 1,
+    "CH": 1,
+    "RG": 1
+  },
+  "clientes": {
+    "11144477735": {
+      "cpf": "11144477735",
+      "nome": "Ana Beatriz Souza",
+      "email": "ana.souza@example.com",
+      "telefone": "(21) 98888-0101",
+      "plano": "Fibra 500 Mega",
+      "endereco": "Rua das Palmeiras, 120 — Rio de Janeiro/RJ",
+      "faturas": [
+        {
+          "valor_centavos": 11990,
+          "vencimento": "2026-09-17T18:40:27.514022-03:00",
+          "paga": false,
+          "linha_digitavel": "34191.09008 11144.477735 16899.535009 5 91240000011990"
+        }
+      ]
+    },
+    "16899535009": {
+      "cpf": "16899535009",
+      "nome": "Marina Lopes",
+      "email": "marina.lopes@example.com",
+      "telefone": "(21) 96666-0303",
+      "plano": "Fibra 250 Mega",
+      "endereco": "Rua do Farol, 45 — Rio de Janeiro/RJ",
+      "faturas": [
+        {
+          "valor_centavos": 8990,
+          "vencimento": "2026-09-29T18:40:27.514022-03:00",
+          "paga": false,
+          "linha_digitavel": "34191.09008 16899.535009 52998.224725 7 91240000008990"
+        }
+      ]
+    },
+    "52998224725": {
+      "cpf": "52998224725",
+      "nome": "Carlos Eduardo Ramos",
+      "email": "carlos.ramos@example.com",
+      "telefone": "(21) 97777-0202",
+      "plano": "Fibra 700 Mega + WaveTV",
+      "endereco": "Av. Atlântica, 1500 — Niterói/RJ",
+      "faturas": [
+        {
+          "valor_centavos": 14990,
+          "vencimento": "2026-10-03T18:40:27.514022-03:00",
+          "paga": true,
+          "linha_digitavel": "34191.09008 52998.224725 11144.477735 6 91240000014990"
+        }
+      ]
+    }
+  },
+  "atendimentos": [
+    {
+      "id": "dllbjw7eukqg",
+      "protocolo": "RG-2026-0001",
+      "tipo": "religue",
+      "cliente_cpf": "11144477735",
+      "cliente_nome": "Ana Beatriz Souza",
+      "resumo": "Religue solicitado com comprovação de pagamento",
+      "descricao": "Cliente confirmou o pagamento via Pix e enviou o comprovante pelo WhatsApp.",
+      "prioridade": "alta",
+      "status": "aberto",
+      "origem": "painel",
+      "detalhes": {
+        "forma_pagamento": "pix",
+        "valor": "R$ 119,90",
+        "vencimento": "17/09/2026"
+      },
+      "criado_em": "2026-09-21T18:40:27.514171-03:00",
+      "atualizado_em": "2026-09-21T18:40:27.514171-03:00"
+    },
+    {
+      "id": "dllbjw7esy3c",
+      "protocolo": "BV-2026-0001",
+      "tipo": "segunda_via",
+      "cliente_cpf": "16899535009",
+      "cliente_nome": "Marina Lopes",
+      "resumo": "Segunda via enviada por e-mail",
+      "descricao": "Cliente pediu a segunda via da fatura de setembro por e-mail.",
+      "prioridade": "baixa",
+      "status": "resolvido",
+      "origem": "voz",
+      "conversa_id": "demo-seed-2",
+      "detalhes": {
+        "canal": "email",
+        "enviado_para": "marina.lopes@example.com",
+        "valor": "R$ 89,90",
+        "vencimento": "29/09/2026"
+      },
+      "criado_em": "2026-09-21T18:40:27.514096-03:00",
+      "atualizado_em": "2026-09-21T15:40:27.514022-03:00"
+    },
+    {
+      "id": "dllbjw7erfb4",
+      "protocolo": "CH-2026-0001",
+      "tipo": "chamado_tecnico",
+      "cliente_cpf": "52998224725",
+      "cliente_nome": "Carlos Eduardo Ramos",
+      "resumo": "Sem conexão desde a madrugada",
+      "descricao": "A internet caiu por volta das 3h. A luz do modem fica vermelha e o wi-fi não aparece em nenhum celular da casa.",
+      "prioridade": "alta",
+      "status": "em_atendimento",
+      "origem": "voz",
+      "conversa_id": "demo-seed-1",
+      "detalhes": {
+        "problema": "sem_conexao"
+      },
+      "criado_em": "2026-09-21T18:40:27.514025-03:00",
+      "atualizado_em": "2026-09-21T18:00:27.514022-03:00"
+    }
+  ]
+}

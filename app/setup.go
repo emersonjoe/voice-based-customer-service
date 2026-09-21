@@ -22,11 +22,17 @@ func Setup(a *trilha.App) error {
 	cfg.Locales = []string{"pt-BR"}
 
 	// O widget de voz usa o microfone na mesma origem; a sessão de conversa
-	// abre WebSocket com a ElevenLabs. CSP/Permissions ficam no mínimo
-	// necessário — nada de curingas.
+	// fala com a ElevenLabs: REST/token em api.elevenlabs.io e sinalização
+	// WebRTC (LiveKit) em livekit.rtc.elevenlabs.io, por WSS e HTTPS. CSP e
+	// Permissions ficam no mínimo necessário — nada de curingas.
 	cfg.Security.PermissionsPolicy = "camera=(), microphone=(self), display-capture=(self), geolocation=(), payment=(), usb=()"
 	cfg.Security.CSPExtra = map[string][]string{
-		"connect-src": {"wss://api.elevenlabs.io", "https://api.elevenlabs.io"},
+		"connect-src": {
+			"wss://api.elevenlabs.io",
+			"https://api.elevenlabs.io",
+			"wss://livekit.rtc.elevenlabs.io",
+			"https://livekit.rtc.elevenlabs.io",
+		},
 	}
 
 	dir := os.Getenv("DATA_DIR")

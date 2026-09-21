@@ -83,8 +83,9 @@ error HTTP para falha de negócio, voltam com `status` explicativo
   clássicos de documentação (CPF inválidos no mundo real); `data/` gerado em
   execução não é versionado.
 - **CSP apertada** — `default-src 'self'`, sem `unsafe-inline` em script; as
-  únicas origens extras são o WebSocket/HTTPS da ElevenLabs
-  (`connect-src`).
+  únicas origens extras são as da conversa de voz: REST/token
+  (`api.elevenlabs.io`) e sinalização WebRTC LiveKit
+  (`livekit.rtc.elevenlabs.io`), sempre em `connect-src`.
 - **Permissions-Policy mínimo** — `microphone=(self)` apenas, porque o
   widget precisa do microfone na mesma origem.
 - **CSRF** nas escritas do painel (`KindPage` no ramo `/api/chamados`);

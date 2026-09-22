@@ -15,7 +15,7 @@
       "faturas": [
         {
           "valor_centavos": 11990,
-          "vencimento": "2026-09-18T11:18:49.472316-03:00",
+          "vencimento": "2026-09-18T11:20:28.292393-03:00",
           "paga": false,
           "linha_digitavel": "34191.09008 11144.477735 16899.535009 5 91240000011990"
         }
@@ -31,7 +31,7 @@
       "faturas": [
         {
           "valor_centavos": 8990,
-          "vencimento": "2026-09-30T11:18:49.472316-03:00",
+          "vencimento": "2026-09-30T11:20:28.292393-03:00",
           "paga": false,
           "linha_digitavel": "34191.09008 16899.535009 52998.224725 7 91240000008990"
         }
@@ -47,7 +47,7 @@
       "faturas": [
         {
           "valor_centavos": 14990,
-          "vencimento": "2026-10-04T11:18:49.472316-03:00",
+          "vencimento": "2026-10-04T11:20:28.292393-03:00",
           "paga": true,
           "linha_digitavel": "34191.09008 52998.224725 11144.477735 6 91240000014990"
         }
@@ -56,7 +56,7 @@
   },
   "atendimentos": [
     {
-      "id": "dllwsasa8u40",
+      "id": "dllwtk6l45mg",
       "protocolo": "RG-2026-0001",
       "tipo": "religue",
       "cliente_cpf": "11144477735",
@@ -71,11 +71,11 @@
         "valor": "R$ 119,90",
         "vencimento": "18/09/2026"
       },
-      "criado_em": "2026-09-22T11:18:49.47255-03:00",
-      "atualizado_em": "2026-09-22T11:18:49.47255-03:00"
+      "criado_em": "2026-09-22T11:20:28.292539-03:00",
+      "atualizado_em": "2026-09-22T11:20:28.292539-03:00"
     },
     {
-      "id": "dllwsasa5vmo",
+      "id": "dllwtk6l2vbs",
       "protocolo": "BV-2026-0001",
       "tipo": "segunda_via",
       "cliente_cpf": "16899535009",
@@ -92,11 +92,11 @@
         "valor": "R$ 89,90",
         "vencimento": "30/09/2026"
       },
-      "criado_em": "2026-09-22T11:18:49.472412-03:00",
-      "atualizado_em": "2026-09-22T08:18:49.472316-03:00"
+      "criado_em": "2026-09-22T11:20:28.292479-03:00",
+      "atualizado_em": "2026-09-22T08:20:28.292393-03:00"
     },
     {
-      "id": "dllwsasa3xew",
+      "id": "dllwtk6l14ts",
       "protocolo": "CH-2026-0001",
       "tipo": "chamado_tecnico",
       "cliente_cpf": "52998224725",
@@ -110,8 +110,8 @@
       "detalhes": {
         "problema": "sem_conexao"
       },
-      "criado_em": "2026-09-22T11:18:49.472321-03:00",
-      "atualizado_em": "2026-09-22T10:38:49.472316-03:00"
+      "criado_em": "2026-09-22T11:20:28.292398-03:00",
+      "atualizado_em": "2026-09-22T10:40:28.292393-03:00"
     }
   ]
 }

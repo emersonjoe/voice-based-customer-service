@@ -80,6 +80,11 @@ function init(root) {
       /* sem assinatura disponível: segue com o Agent ID */
     }
 
+    // Transparência do modo: agente privado (sessão assinada) ou público.
+    cena("conectando", sessao.signedUrl
+      ? "Conectando — sessão assinada (agente privado)…"
+      : "Conectando — modo público (Agent ID direto)…");
+
     try {
       convo = await Conversation.startSession({
         ...sessao,

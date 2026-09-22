@@ -34,8 +34,10 @@ Pré-requisitos: [Go 1.22+](https://go.dev) e a CLI do Trilha
 (`go install github.com/emersonjoe/trilha/cmd/trilha@latest`).
 
 ```bash
-trilha dev --addr :3000
+./dev.sh        # carrega o .env local (TRILHA_SECRET, chaves) e sobe na :3210
 ```
+
+Ou direto, sem `.env`: `trilha dev --addr :3000`.
 
 Abra `http://localhost:3000`. Sem nenhuma configuração extra o app já sobe
 com uma base fictícia de clientes e atendimentos de exemplo.

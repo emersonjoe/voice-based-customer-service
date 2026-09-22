@@ -23,8 +23,10 @@ func Setup(a *trilha.App) error {
 
 	// O widget de voz usa o microfone na mesma origem; a sessão de conversa
 	// fala com a ElevenLabs: REST/token em api.elevenlabs.io e sinalização
-	// WebRTC (LiveKit) em livekit.rtc.elevenlabs.io, por WSS e HTTPS. CSP e
-	// Permissions ficam no mínimo necessário — nada de curingas.
+	// WebRTC (LiveKit) em livekit.rtc.elevenlabs.io, por WSS e HTTPS. Os
+	// worklets de áudio do SDK são blobs (código inline dele) e o resampler
+	// está self-hosted em public/vendor. CSP e Permissions ficam no mínimo
+	// necessário — nada de curingas nem CDN.
 	cfg.Security.PermissionsPolicy = "camera=(), microphone=(self), display-capture=(self), geolocation=(), payment=(), usb=()"
 	cfg.Security.CSPExtra = map[string][]string{
 		"connect-src": {
@@ -33,6 +35,8 @@ func Setup(a *trilha.App) error {
 			"wss://livekit.rtc.elevenlabs.io",
 			"https://livekit.rtc.elevenlabs.io",
 		},
+		"script-src": {"blob:"},
+		"worker-src": {"blob:"},
 	}
 
 	dir := os.Getenv("DATA_DIR")

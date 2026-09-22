@@ -16,6 +16,7 @@ import (
 	app_api_tools_abrir_chamado_tecnico "github.com/emersonjoe/voice-based-customer-service/app/api/tools/abrir_chamado_tecnico"
 	app_api_tools_enviar_segunda_via_boleto "github.com/emersonjoe/voice-based-customer-service/app/api/tools/enviar_segunda_via_boleto"
 	app_api_tools_solicitar_religue_confirmacao "github.com/emersonjoe/voice-based-customer-service/app/api/tools/solicitar_religue_confirmacao"
+	app_api_voz_assinada "github.com/emersonjoe/voice-based-customer-service/app/api/voz/assinada"
 	app_painel "github.com/emersonjoe/voice-based-customer-service/app/painel"
 	app_painel_chamado_id_ "github.com/emersonjoe/voice-based-customer-service/app/painel/chamado/id_"
 )
@@ -79,6 +80,12 @@ func newApp() *trilha.App {
 		Pattern: "/api/tools/solicitar_religue_confirmacao",
 		Methods: map[string]trilha.HandlerFunc{
 			"POST": app_api_tools_solicitar_religue_confirmacao.POST,
+		},
+	})
+	a.Register(trilha.Route{
+		Pattern: "/api/voz/assinada",
+		Methods: map[string]trilha.HandlerFunc{
+			"GET": app_api_voz_assinada.GET,
 		},
 	})
 	a.Register(trilha.Route{

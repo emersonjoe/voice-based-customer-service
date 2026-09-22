@@ -50,12 +50,18 @@ com uma base fictícia de clientes e atendimentos de exemplo.
 3. Permita o microfone e fale: *"minha internet caiu e quero abrir um
    chamado"*.
 
+Se o agente for **privado** (autenticação habilitada na ElevenLabs),
+exporte `ELEVENLABS_API_KEY` no servidor: o widget passa a pedir a ele uma
+URL de sessão assinada (curta-viva) em `GET /api/voz/assinada` em vez de
+conectar com o Agent ID direto. A chave nunca chega ao navegador.
+
 ### Variáveis de ambiente
 
 | Variável | Para que serve |
 |---|---|
 | `TRILHA_SECRET` | Assinatura de cookies e flash (obrigatória fora de dev) — gere com `trilha secret` |
 | `ELEVENLABS_AGENT_ID` | Agent ID público sugerido no widget |
+| `ELEVENLABS_API_KEY` | Chave de API da ElevenLabs, só do servidor — assina a URL de sessão de agentes privados |
 | `DATA_DIR` | Onde o JSON de atendimentos vive (padrão `data/`) |
 
 Copie `.env.example` para `.env` — que está fora do git — e preencha.

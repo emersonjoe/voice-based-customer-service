@@ -61,9 +61,28 @@ function init(root) {
     localStorage.setItem(CHAVE_AGENTE, agenteId);
     toggle.disabled = true;
     cena("conectando", "Conectando com a ElevenLabs…");
+
+    // Agente privado: o servidor assina a sessão com a chave de API (que
+    // nunca chega ao navegador). Sem chave configurada (503), o modo
+    // público segue em silêncio; chave recusada vira aviso para o usuário.
+    let sessao = { agentId: agenteId };
+    let avisoAssinatura = "";
+    try {
+      const assinatura = await fetch("/api/voz/assinada?agente=" + encodeURIComponent(agenteId));
+      if (assinatura.ok) {
+        const dados = await assinatura.json();
+        if (dados.signed_url) sessao = { signedUrl: dados.signed_url };
+      } else if (assinatura.status !== 503) {
+        const dados = await assinatura.json().catch(() => null);
+        if (dados?.mensagem) avisoAssinatura = dados.mensagem + " ";
+      }
+    } catch {
+      /* sem assinatura disponível: segue com o Agent ID */
+    }
+
     try {
       convo = await Conversation.startSession({
-        agentId: agenteId,
+        ...sessao,
         clientTools: ferramentas(),
         onConnect: () => {
           toggle.disabled = false;
@@ -80,7 +99,11 @@ function init(root) {
     } catch (e) {
       convo = null;
       toggle.disabled = false;
-      cena("idle", "Não consegui conectar: " + mensagem(e));
+      const detalhe = mensagem(e);
+      const dica = /\bfetch\b/i.test(detalhe)
+        ? avisoAssinatura || " — se o agente for privado, configure ELEVENLABS_API_KEY no servidor (veja /agente)."
+        : "";
+      cena("idle", "Não consegui conectar: " + detalhe + dica);
     }
   }
 

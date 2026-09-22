@@ -39,6 +39,7 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 			ui.CardFooter(ui.Button(ui.Sm(), ui.Outline(), h.Class("wh-copy"), h.Data("copy-target", "primeira-msg"), h.Text("Copiar mensagem"))),
 		),
 		webhookAlternativo(),
+		agentePrivado(),
 		checklist(),
 	), nil
 }
@@ -95,6 +96,26 @@ func webhookAlternativo() h.Node {
 				"Para uma apresentação local, prefira as client tools: o widget já fala com este app na mesma origem, "+
 					"sem expor nada à internet.")),
 		),
+	)
+}
+
+// agentePrivado explica o fluxo de sessão assinada, para quem ligou a
+// autenticação do agente na ElevenLabs.
+func agentePrivado() h.Node {
+	item := func(texto string) h.Node {
+		return h.Li(h.Class("wh-check"), ui.Icon("circle-check"), h.Span(h.Text(texto)))
+	}
+	return ui.Card(
+		ui.CardHeader(
+			ui.CardTitle("Agente privado (autenticação habilitada)"),
+			ui.CardDescription("Quando o agente não é público na ElevenLabs"),
+		),
+		ui.CardContent(h.Ul(h.Class("wh-checks"),
+			item("Exporte ELEVENLABS_API_KEY no ambiente do servidor — é a chave da sua conta ElevenLabs, e nunca vai para o navegador."),
+			item("O widget então pede a sessão ao servidor: GET /api/voz/assinada?agente=… devolve uma URL assinada, curta-viva."),
+			item("Sem a chave configurada, o widget tenta o modo público com o Agent ID direto — e falha com erro de conexão se o agente for privado."),
+			item("A URL assinada vale como credencial de conversa: não aparece em logs."),
+		)),
 	)
 }
 

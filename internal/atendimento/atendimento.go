@@ -503,6 +503,61 @@ func FormataCPF(cpf string) string {
 	return d[0:3] + "." + d[3:6] + "." + d[6:9] + "-" + d[9:]
 }
 
+// ReparaCPF tenta recuperar um CPF capturado por voz, que às vezes perde,
+// repete ou troca um dígito. Só aceita candidato que passe nos dígitos
+// verificadores; entre os válidos, prefere um CPF do cadastro e, fora dele,
+// só aceita quando o candidato é único. "" quer dizer "não deu".
+func (s *Store) ReparaCPF(capturado string) string {
+	d := SoDigitos(capturado)
+	if CPFValido(d) {
+		return d
+	}
+	var candidatos []string
+	switch {
+	case len(d) == 10: // a fala comeu um dígito
+		for pos := 0; pos <= len(d); pos++ {
+			for x := byte('0'); x <= '9'; x++ {
+				candidatos = append(candidatos, d[:pos]+string(x)+d[pos:])
+			}
+		}
+	case len(d) == 12: // a fala repetiu um dígito
+		for pos := 0; pos < len(d); pos++ {
+			candidatos = append(candidatos, d[:pos]+d[pos+1:])
+		}
+	case len(d) == 11: // um dígito veio errado
+		for pos := 0; pos < len(d); pos++ {
+			for x := byte('0'); x <= '9'; x++ {
+				if x == d[pos] {
+					continue
+				}
+				candidatos = append(candidatos, d[:pos]+string(x)+d[pos+1:])
+			}
+		}
+	default:
+		return ""
+	}
+	var unicos []string
+	for _, c := range candidatos {
+		if CPFValido(c) && !slices.Contains(unicos, c) {
+			unicos = append(unicos, c)
+		}
+	}
+	if len(unicos) == 0 {
+		return ""
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, c := range unicos {
+		if _, ok := s.Clientes[c]; ok {
+			return c
+		}
+	}
+	if len(unicos) == 1 {
+		return unicos[0]
+	}
+	return ""
+}
+
 // BRL formata centavos como reais: 11990 → "R$ 119,90".
 func BRL(centavos int64) string {
 	reais := centavos / 100

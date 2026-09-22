@@ -19,6 +19,7 @@ type resposta struct {
 	Status         string `json:"status"`
 	Protocolo      string `json:"protocolo,omitempty"`
 	Cliente        string `json:"cliente,omitempty"`
+	Cpf            string `json:"cpf,omitempty"`
 	Mensagem       string `json:"mensagem"`
 	Valor          string `json:"valor,omitempty"`
 	Vencimento     string `json:"vencimento,omitempty"`
@@ -39,17 +40,28 @@ func POST(c *trilha.Ctx) error {
 			"Não entendi o corpo da requisição: esperava JSON com o cpf do cliente."))
 	}
 
-	cpf := atendimento.SoDigitos(apiutil.Texto(corpo, "cpf"))
+	// A voz às vezes derrapa um dígito do CPF: tenta reparar contra o
+	// cadastro antes de negar.
+	store := trilha.Use[*atendimento.Store](c)
+	cpf, cpfReparado := apiutil.CPFDaFerramenta(corpo, store)
 	if !atendimento.CPFValido(cpf) {
+		recebido := atendimento.SoDigitos(apiutil.Texto(corpo, "cpf"))
+		if recebido == "" {
+			return c.JSON(http.StatusOK, falha("cpf_invalido",
+				"Para localizar o cadastro preciso do CPF, com os onze números."))
+		}
 		return c.JSON(http.StatusOK, falha("cpf_invalido",
-			"Para localizar o cadastro preciso do CPF, com os onze números."))
+			"O CPF que recebi ("+recebido+") não é válido. Confira os onze números com o cliente, falando devagar, um por um."))
 	}
 
-	store := trilha.Use[*atendimento.Store](c)
 	cliente, ok := store.ClientePorCPF(cpf)
 	if !ok {
 		return c.JSON(http.StatusOK, falha("cliente_nao_encontrado",
 			"Não localizei um cadastro com esse CPF. Peça para conferir os números e tente de novo."))
+	}
+	aviso := ""
+	if cpfReparado {
+		aviso = "Corrigi o CPF para " + atendimento.FormataCPF(cpf) + " contra o cadastro — confirme com o cliente. "
 	}
 
 	fatura, ok := cliente.FaturaAberta(time.Now())
@@ -90,13 +102,14 @@ func POST(c *trilha.Ctx) error {
 
 	c.Log().Info("ferramenta enviar_segunda_via_boleto: envio registrado", "protocolo", att.Protocolo)
 	venc := fatura.Vencimento.Format("02/01/2006")
-	mensagem := "Cadastro de " + cliente.Nome + " localizado. Segunda via enviada para " + destino +
+	mensagem := aviso + "Cadastro de " + cliente.Nome + " localizado. Segunda via enviada para " + destino +
 		". O valor é " + atendimento.BRL(fatura.ValorCentavos) +
 		", com vencimento em " + venc + ". O protocolo do atendimento é " + att.Protocolo + "."
 	return c.JSON(http.StatusOK, resposta{
 		Status:         "sucesso",
 		Protocolo:      att.Protocolo,
 		Cliente:        cliente.Nome,
+		Cpf:            atendimento.FormataCPF(cpf),
 		Valor:          atendimento.BRL(fatura.ValorCentavos),
 		Vencimento:     venc,
 		LinhaDigitavel: fatura.LinhaDigitavel,

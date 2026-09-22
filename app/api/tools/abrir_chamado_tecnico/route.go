@@ -18,6 +18,7 @@ type resposta struct {
 	Status     string `json:"status"`
 	Protocolo  string `json:"protocolo,omitempty"`
 	Cliente    string `json:"cliente,omitempty"`
+	Cpf        string `json:"cpf,omitempty"`
 	Mensagem   string `json:"mensagem"`
 	Prazo      string `json:"prazo,omitempty"`
 	Prioridade string `json:"prioridade,omitempty"`
@@ -37,23 +38,30 @@ func POST(c *trilha.Ctx) error {
 	}
 
 	nome := strings.TrimSpace(apiutil.Texto(corpo, "nome"))
-	cpf := atendimento.SoDigitos(apiutil.Texto(corpo, "cpf"))
 	descricao := strings.TrimSpace(apiutil.Texto(corpo, "descricao"))
 	problema := strings.ToLower(apiutil.Texto(corpo, "problema"))
 	prioridade := atendimento.Prioridade(strings.ToLower(apiutil.Texto(corpo, "prioridade")))
 
-	switch {
-	case !atendimento.CPFValido(cpf):
+	// A voz às vezes derrapa um dígito do CPF: tenta reparar contra o
+	// cadastro antes de negar.
+	store := trilha.Use[*atendimento.Store](c)
+	cpf, cpfReparado := apiutil.CPFDaFerramenta(corpo, store)
+	if !atendimento.CPFValido(cpf) {
+		recebido := atendimento.SoDigitos(apiutil.Texto(corpo, "cpf"))
+		if recebido == "" {
+			return c.JSON(http.StatusOK, falha("cpf_invalido",
+				"Preciso do CPF do cliente, com os onze números."))
+		}
 		return c.JSON(http.StatusOK, falha("cpf_invalido",
-			"O CPF informado não é válido. Peça o cliente para conferir os onze números."))
-	case descricao == "" || len(descricao) > 1000:
+			"O CPF que recebi ("+recebido+") não é válido. Confira os onze números com o cliente, falando devagar, um por um."))
+	}
+	if descricao == "" || len(descricao) > 1000 {
 		return c.JSON(http.StatusOK, falha("descricao_invalida",
 			"Preciso de uma descrição do problema, com até mil caracteres."))
 	}
 
 	// O nome é opcional quando o CPF está no cadastro: a base sabe quem é o
 	// cliente, e a conversa não precisa cobrar o dado duas vezes.
-	store := trilha.Use[*atendimento.Store](c)
 	if len(nome) < 3 || len(nome) > 120 {
 		if cliente, ok := store.ClientePorCPF(cpf); ok {
 			nome = cliente.Nome
@@ -85,13 +93,18 @@ func POST(c *trilha.Ctx) error {
 		apiutil.Texto(corpo, "conversation_id"), detalhes)
 
 	c.Log().Info("ferramenta abrir_chamado_tecnico: protocolo criado", "protocolo", att.Protocolo)
+	aviso := ""
+	if cpfReparado {
+		aviso = "Corrigi o CPF para " + atendimento.FormataCPF(cpf) + " contra o cadastro — confirme com o cliente. "
+	}
 	return c.JSON(http.StatusOK, resposta{
 		Status:     "sucesso",
 		Protocolo:  att.Protocolo,
 		Cliente:    att.ClienteNome,
+		Cpf:        atendimento.FormataCPF(cpf),
 		Prazo:      prazoDe(prioridade),
 		Prioridade: string(prioridade),
-		Mensagem: "Chamado " + att.Protocolo + " aberto para " + att.ClienteNome +
+		Mensagem: aviso + "Chamado " + att.Protocolo + " aberto para " + att.ClienteNome +
 			", com prioridade " + prioridade.Rotulo() + ". " + prazoDe(prioridade) +
 			", e pode acompanhar tudo pelo protocolo.",
 	})

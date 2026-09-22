@@ -10,8 +10,24 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/emersonjoe/voice-based-customer-service/internal/atendimento"
 	"github.com/emersonjoe/voice-based-customer-service/internal/limite"
 )
+
+// CPFDaFerramenta normaliza o CPF recebido e, quando ele veio errado da voz
+// (dígito perdido, repetido ou trocado), tenta repará-lo contra o cadastro.
+// O booleano diz se houve reparo — a resposta deve pedir confirmação ao
+// cliente antes de seguir.
+func CPFDaFerramenta(corpo map[string]any, store *atendimento.Store) (string, bool) {
+	cpf := atendimento.SoDigitos(Texto(corpo, "cpf"))
+	if atendimento.CPFValido(cpf) {
+		return cpf, false
+	}
+	if consertado := store.ReparaCPF(cpf); consertado != "" {
+		return consertado, true
+	}
+	return cpf, false
+}
 
 // Corpo decodifica o JSON da requisição num mapa, ignorando campos
 // desconhecidos. A tolerância é de propósito: o mesmo endpoint recebe

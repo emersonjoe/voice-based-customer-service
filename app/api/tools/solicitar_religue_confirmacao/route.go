@@ -18,6 +18,7 @@ type resposta struct {
 	Status    string `json:"status"`
 	Protocolo string `json:"protocolo,omitempty"`
 	Cliente   string `json:"cliente,omitempty"`
+	Cpf       string `json:"cpf,omitempty"`
 	Mensagem  string `json:"mensagem"`
 	Prazo     string `json:"prazo,omitempty"`
 }
@@ -35,10 +36,18 @@ func POST(c *trilha.Ctx) error {
 			"Não entendi o corpo da requisição: esperava JSON com o cpf e a confirmação do pagamento."))
 	}
 
-	cpf := atendimento.SoDigitos(apiutil.Texto(corpo, "cpf"))
+	// A voz às vezes derrapa um dígito do CPF: tenta reparar contra o
+	// cadastro antes de negar.
+	store := trilha.Use[*atendimento.Store](c)
+	cpf, cpfReparado := apiutil.CPFDaFerramenta(corpo, store)
 	if !atendimento.CPFValido(cpf) {
+		recebido := atendimento.SoDigitos(apiutil.Texto(corpo, "cpf"))
+		if recebido == "" {
+			return c.JSON(http.StatusOK, falha("cpf_invalido",
+				"Para localizar o cadastro preciso do CPF, com os onze números."))
+		}
 		return c.JSON(http.StatusOK, falha("cpf_invalido",
-			"Para localizar o cadastro preciso do CPF, com os onze números."))
+			"O CPF que recebi ("+recebido+") não é válido. Confira os onze números com o cliente, falando devagar, um por um."))
 	}
 
 	// Sem confirmação de pagamento não há religue: a resposta diz o que
@@ -49,11 +58,14 @@ func POST(c *trilha.Ctx) error {
 				"do pagamento e chame esta ferramenta de novo com pagamento_confirmado=true."))
 	}
 
-	store := trilha.Use[*atendimento.Store](c)
 	cliente, ok := store.ClientePorCPF(cpf)
 	if !ok {
 		return c.JSON(http.StatusOK, falha("cliente_nao_encontrado",
 			"Não localizei um cadastro com esse CPF. Peça para conferir os números e tente de novo."))
+	}
+	aviso := ""
+	if cpfReparado {
+		aviso = "Corrigi o CPF para " + atendimento.FormataCPF(cpf) + " contra o cadastro — confirme com o cliente. "
 	}
 
 	fatura, temFatura := cliente.FaturaAberta(time.Now())
@@ -83,8 +95,9 @@ func POST(c *trilha.Ctx) error {
 		Status:    "solicitacao_registrada",
 		Protocolo: att.Protocolo,
 		Cliente:   cliente.Nome,
+		Cpf:       atendimento.FormataCPF(cpf),
 		Prazo:     "até 2 horas úteis",
-		Mensagem:  "Cadastro de " + cliente.Nome + " localizado. Pedido de religue registrado no protocolo " + att.Protocolo + ". A equipe técnica religa o sinal em até 2 horas úteis.",
+		Mensagem:  aviso + "Cadastro de " + cliente.Nome + " localizado. Pedido de religue registrado no protocolo " + att.Protocolo + ". A equipe técnica religa o sinal em até 2 horas úteis.",
 	})
 }
 

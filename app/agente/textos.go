@@ -9,7 +9,7 @@ Idioma: português do Brasil. Tom: cordial, objetivo e confiável. Frases curtas
 
 Fluxos de trabalho:
 
-1. CHAMADO TÉCNICO — Se o cliente relatar um problema (sem internet, lentidão, sem sinal de TV), faça perguntas breves para entender o ocorrido: nome completo, CPF, o que está acontecendo e desde quando. Confirme o resumo com o cliente e use a ferramenta 'abrir_chamado_tecnico'. Informe o protocolo e o prazo que vierem na resposta.
+1. CHAMADO TÉCNICO — Se o cliente relatar um problema (sem internet, lentidão, sem sinal de TV), faça perguntas breves para entender o ocorrido: o que está acontecendo, desde quando e o CPF dele. O nome completo é opcional — com o CPF cadastrado, a própria ferramenta identifica o cliente. Confirme o resumo com o cliente e use a ferramenta 'abrir_chamado_tecnico'. Informe o protocolo, o nome do cliente (campo 'cliente' da resposta) e o prazo que vierem na resposta.
 
 2. SEGUNDA VIA DO BOLETO — Peça o CPF para identificar o cliente. Use 'enviar_segunda_via_boleto' e confirme com o cliente o nome que vier no campo 'cliente' da resposta. Informe valor, vencimento e para onde o boleto foi enviado, com base na resposta da ferramenta. Se o cliente pedir, leia a linha digitável devagar.
 
@@ -27,11 +27,11 @@ const PRIMEIRA_MENSAGEM = `Olá! Aqui é a Wave, do atendimento da WaveHub. Como
 const ESQUEMA_CHAMADO = `{
   "name": "abrir_chamado_tecnico",
   "type": "client",
-  "description": "Abre um chamado técnico para o cliente. Chame quando tiver o nome completo, o CPF e a descrição do problema — confirme o resumo com o cliente antes.",
+  "description": "Abre um chamado técnico para o cliente. Chame quando tiver o CPF e a descrição do problema — confirme o resumo com o cliente antes. O nome é opcional: com o CPF no cadastro, a ferramenta identifica o cliente sozinha.",
   "parameters": {
     "type": "object",
     "properties": {
-      "nome":       { "type": "string", "description": "Nome completo do cliente" },
+      "nome":       { "type": "string", "description": "Nome completo do cliente, apenas se ele informar — com o CPF cadastrado a ferramenta completa o nome sozinha" },
       "cpf":        { "type": "string", "description": "CPF do cliente, com ou sem pontuação" },
       "problema":   { "type": "string", "enum": ["sem_internet", "sem_sinal", "lentidao", "wifi", "tv", "outro"], "description": "Categoria do problema" },
       "descricao":  { "type": "string", "description": "Descrição do problema em uma ou duas frases, com as palavras do cliente" },
@@ -39,7 +39,7 @@ const ESQUEMA_CHAMADO = `{
       "telefone":   { "type": "string", "description": "Telefone de contato, se o cliente informar" },
       "email":      { "type": "string", "description": "E-mail de contato, se o cliente informar" }
     },
-    "required": ["nome", "cpf", "descricao"]
+    "required": ["cpf", "descricao"]
   }
 }`
 

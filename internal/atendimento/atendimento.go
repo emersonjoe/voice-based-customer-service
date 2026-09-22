@@ -225,8 +225,10 @@ func (s *Store) salvar() error {
 	return os.Rename(tmp, s.path)
 }
 
-// Criar registra um atendimento e devolve a cópia criada.
-func (s *Store) Criar(t Tipo, cpf, resumo, descricao string, p Prioridade, origem, conversaID string, detalhes map[string]string) *Atendimento {
+// Criar registra um atendimento e devolve a cópia criada. O nome informado
+// na conversa entra como reserva: quando o CPF está no cadastro, o nome da
+// base prevalece.
+func (s *Store) Criar(t Tipo, cpf, nome, resumo, descricao string, p Prioridade, origem, conversaID string, detalhes map[string]string) *Atendimento {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -234,6 +236,9 @@ func (s *Store) Criar(t Tipo, cpf, resumo, descricao string, p Prioridade, orige
 		s.Seq = map[string]int{}
 	}
 	cpf = SoDigitos(cpf)
+	if base := s.nomeDe(cpf); base != "" {
+		nome = base
+	}
 	s.Seq[t.Prefixo()]++
 	ano, _, _ := time.Now().Date()
 	att := &Atendimento{
@@ -241,7 +246,7 @@ func (s *Store) Criar(t Tipo, cpf, resumo, descricao string, p Prioridade, orige
 		Protocolo:    fmt.Sprintf("%s-%d-%04d", t.Prefixo(), ano, s.Seq[t.Prefixo()]),
 		Tipo:         t,
 		ClienteCPF:   cpf,
-		ClienteNome:  s.nomeDe(cpf),
+		ClienteNome:  nome,
 		Resumo:       resumo,
 		Descricao:    descricao,
 		Prioridade:   p,
@@ -548,13 +553,13 @@ func (s *Store) semear() {
 		},
 	}
 
-	ch := s.Criar(TipoChamadoTecnico, "52998224725", "Sem conexão desde a madrugada",
+	ch := s.Criar(TipoChamadoTecnico, "52998224725", "", "Sem conexão desde a madrugada",
 		"A internet caiu por volta das 3h. A luz do modem fica vermelha e o wi-fi não aparece em nenhum celular da casa.",
 		PrioridadeAlta, "voz", "demo-seed-1", map[string]string{"problema": "sem_conexao"})
 	ch.Status = StatusEmAtendimento
 	ch.AtualizadoEm = agora.Add(-40 * time.Minute)
 
-	bv := s.Criar(TipoSegundaVia, "16899535009", "Segunda via enviada por e-mail",
+	bv := s.Criar(TipoSegundaVia, "16899535009", "", "Segunda via enviada por e-mail",
 		"Cliente pediu a segunda via da fatura de setembro por e-mail.",
 		PrioridadeBaixa, "voz", "demo-seed-2", map[string]string{
 			"canal": "email", "enviado_para": "marina.lopes@example.com",
@@ -563,7 +568,7 @@ func (s *Store) semear() {
 	bv.Status = StatusResolvido
 	bv.AtualizadoEm = agora.Add(-3 * time.Hour)
 
-	s.Criar(TipoReligue, "11144477735", "Religue solicitado com comprovação de pagamento",
+	s.Criar(TipoReligue, "11144477735", "", "Religue solicitado com comprovação de pagamento",
 		"Cliente confirmou o pagamento via Pix e enviou o comprovante pelo WhatsApp.",
 		PrioridadeAlta, "painel", "", map[string]string{
 			"forma_pagamento": "pix", "valor": BRL(11990),

@@ -41,7 +41,7 @@ func TestCriarEListar(t *testing.T) {
 	s := &Store{Seq: map[string]int{}}
 	s.semear()
 
-	a := s.Criar(TipoChamadoTecnico, "111.444.777-35", "Sem sinal", "Modem apagado.", PrioridadeAlta, "voz", "", nil)
+	a := s.Criar(TipoChamadoTecnico, "111.444.777-35", "Ana Beatriz Souza", "Sem sinal", "Modem apagado.", PrioridadeAlta, "voz", "", nil)
 	if a.Protocolo[:3] != "CH-" {
 		t.Errorf("protocolo = %s; queria prefixo CH-", a.Protocolo)
 	}
@@ -49,7 +49,7 @@ func TestCriarEListar(t *testing.T) {
 		t.Errorf("cliente nome = %q; queria o nome da base", a.ClienteNome)
 	}
 
-	b := s.Criar(TipoReligue, "11144477735", "Religue", "Pagou e pediu religue.", PrioridadeAlta, "voz", "", nil)
+	b := s.Criar(TipoReligue, "11144477735", "", "Religue", "Pagou e pediu religue.", PrioridadeAlta, "voz", "", nil)
 	if b.Protocolo[:3] != "RG-" {
 		t.Errorf("protocolo = %s; queria prefixo RG-", b.Protocolo)
 	}
@@ -76,7 +76,7 @@ func TestCriarEListar(t *testing.T) {
 func TestAtualizarStatus(t *testing.T) {
 	s := &Store{Seq: map[string]int{}}
 	s.semear()
-	a := s.Criar(TipoChamadoTecnico, "52998224725", "Lentidão", "Está arrastando.", PrioridadeMedia, "voz", "", nil)
+	a := s.Criar(TipoChamadoTecnico, "52998224725", "", "Lentidão", "Está arrastando.", PrioridadeMedia, "voz", "", nil)
 
 	if !s.AtualizarStatus(a.ID, StatusEmAtendimento) {
 		t.Fatal("atualização falhou para id existente")
@@ -132,7 +132,7 @@ func TestAbrirArquivo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Abrir: %v", err)
 	}
-	s.Criar(TipoSegundaVia, "16899535009", "2ª via", "Por e-mail.", PrioridadeBaixa, "voz", "", nil)
+	s.Criar(TipoSegundaVia, "16899535009", "", "2ª via", "Por e-mail.", PrioridadeBaixa, "voz", "", nil)
 
 	deNovo, err := Abrir(path)
 	if err != nil {

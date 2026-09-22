@@ -82,7 +82,7 @@ func POST(c *trilha.Ctx) error {
 		"vencimento":   fatura.Vencimento.Format("02/01/2006"),
 		"linha":        fatura.LinhaDigitavel,
 	}
-	att := store.Criar(atendimento.TipoSegundaVia, cpf,
+	att := store.Criar(atendimento.TipoSegundaVia, cpf, "",
 		"Segunda via enviada por "+canal,
 		"Segunda via da fatura de "+fatura.Vencimento.Format("01/2006")+" enviada pelo agente de voz.",
 		atendimento.PrioridadeBaixa, origem(r),

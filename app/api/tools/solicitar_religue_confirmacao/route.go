@@ -72,7 +72,7 @@ func POST(c *trilha.Ctx) error {
 		"valor":           atendimento.BRL(fatura.ValorCentavos),
 		"vencimento":      fatura.Vencimento.Format("02/01/2006"),
 	}
-	att := store.Criar(atendimento.TipoReligue, cpf,
+	att := store.Criar(atendimento.TipoReligue, cpf, "",
 		"Religue solicitado com comprovação de pagamento",
 		"Cliente confirmou o pagamento da fatura vencida e pediu o religue do sinal.",
 		atendimento.PrioridadeAlta, origem(r),

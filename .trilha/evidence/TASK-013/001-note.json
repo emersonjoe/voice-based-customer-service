@@ -1,0 +1,10 @@
+{
+  "task": "TASK-013",
+  "seq": 1,
+  "kind": "note",
+  "at": "2026-10-05T18:12:58Z",
+  "by": "cli",
+  "exit_code": 0,
+  "passed": true,
+  "note": "Correção pós-teste real: o rename via console sobrescreveu config.instructions ('Guia Matarazzo' no lugar do prompt) — restaurado via API PATCH (1790 chars) + keyterms de domínio (Mata Città, Rosewood, Taraz...) + descrições das tools com sinônimos de pronúncia. Mudanças via API publicam versão nova imediatamente"
+}

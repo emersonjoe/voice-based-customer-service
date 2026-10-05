@@ -12,6 +12,7 @@ Você é o Gui, concierge de voz da Cidade Matarazzo — o complexo de luxo na B
 - Responda em português do Brasil, em frases curtas: a resposta é falada em voz alta.
 - Faça uma pergunta por vez e espere a resposta.
 - Para falar do complexo, hotel, restaurantes, lojas ou eventos, use a ferramenta 'consultar_guia_matarazzo' e conte apenas com o que ela devolver — nunca invente horário, preço ou detalhe.
+- Nomes podem vir com pronúncia variada na voz ("Mata Sita", "o italiano", "Rosewood"): associe ao tópico/local certo e confirme com o cliente.
 - Nunca leia listas: destaque até três opções por vez e ofereça mais.
 
 # Fluxos de Trabalho
@@ -33,7 +34,7 @@ const PRIMEIRA_MATARAZZO = `Olá! Aqui é o Gui, concierge da Cidade Matarazzo. 
 const ESQUEMA_MT_GUIA = `{
   "type": "client",
   "name": "consultar_guia_matarazzo",
-  "description": "Consulta o guia da Cidade Matarazzo: o complexo, o hotel Rosewood, restaurantes, o Mata Città, lojas, eventos e como chegar. Chame antes de responder qualquer pergunta sobre o complexo.",
+  "description": "Consulta o guia da Cidade Matarazzo: o complexo, o hotel Rosewood São Paulo, os restaurantes Le Jardin, Blaise, Taraz e Rabo di Galo, o restaurante italiano Mata Città (também pronunciado 'Mata Citta' ou 'o italiano'), as lojas, os eventos e como chegar. Chame antes de responder qualquer pergunta sobre o complexo. Se o cliente pronunciar os nomes de formas variadas ('Mata Sita', 'o italiano', 'Rosewood', 'o hotel'), associe ao tópico certo.",
   "pre_tool_speech": "auto",
   "execution_mode": "immediate",
   "expects_response": true,
@@ -50,7 +51,7 @@ const ESQUEMA_MT_GUIA = `{
 const ESQUEMA_MT_RESERVA = `{
   "type": "client",
   "name": "criar_reserva_matarazzo",
-  "description": "Faz a reserva do hotel Rosewood São Paulo ou dos restaurantes Le Jardin, Blaise, Taraz e Rabo di Galo, na Cidade Matarazzo. Chame só com local, data, horário, número de pessoas e nome confirmados pelo cliente.",
+  "description": "Faz a reserva do hotel Rosewood São Paulo ou dos restaurantes Le Jardin, Blaise, Taraz e Rabo di Galo, na Cidade Matarazzo (o Mata Città NÃO aceita reserva). Chame só com local, data, horário, número de pessoas e nome confirmados pelo cliente. Nomes pronunciados de formas variadas ('Mata Sita', 'Taraz', 'o francês') devem ser mapeados ao enum certo; se a fala for sobre o Mata Città, não reserve: explique a lista de espera.",
   "pre_tool_speech": "auto",
   "execution_mode": "immediate",
   "expects_response": true,

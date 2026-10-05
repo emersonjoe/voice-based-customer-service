@@ -32,18 +32,25 @@ function init(root) {
   const agentInput = document.getElementById("wh-agent-id");
   const provedorSelect = document.getElementById("wh-provedor");
 
-  const CHAVES = {
-    elevenlabs: "wh_agent_id_elevenlabs",
-    cartesia: "wh_agent_id_cartesia",
-  };
+  const fixado = root.dataset.provedorFixo === "cartesia" ? "cartesia" : "";
+
+  // Chave do navegador por provedor E por agente default da página: o
+  // agente Wave (Cartesia) e o Guia Matarazzo nunca poluem um ao outro.
+  function chaveAgente() {
+    const padrao = provedorNome === "cartesia"
+      ? root.dataset.agentIdCartesia || ""
+      : root.dataset.agentId || "";
+    return "wh_agent_id_" + provedorNome + "#" + padrao;
+  }
 
   // Migração: a chave antiga única vira a da ElevenLabs.
-  if (localStorage.getItem(CHAVES.elevenlabs) === null && localStorage.getItem("wh_agent_id")) {
-    localStorage.setItem(CHAVES.elevenlabs, localStorage.getItem("wh_agent_id"));
+  if (localStorage.getItem("wh_agent_id_elevenlabs#") === null && localStorage.getItem("wh_agent_id")) {
+    localStorage.setItem("wh_agent_id_elevenlabs#", localStorage.getItem("wh_agent_id"));
     localStorage.removeItem("wh_agent_id");
   }
 
-  let provedorNome = localStorage.getItem("wh_provedor") === "cartesia" ? "cartesia" : "elevenlabs";
+  let provedorNome = fixado
+    || (localStorage.getItem("wh_provedor") === "cartesia" ? "cartesia" : "elevenlabs");
   let provedor = null; // instância ativa (iniciar/encerrar/enviarTexto)
   let avisoTemporario = null;
 
@@ -60,13 +67,17 @@ function init(root) {
 
   function agenteAtual() {
     return agentInput.value.trim()
-      || localStorage.getItem(CHAVES[provedorNome])
+      || localStorage.getItem(chaveAgente())
       || padraoDoProvedor();
   }
 
   function aplicarProvedor() {
-    provedorSelect.value = provedorNome;
-    agentInput.value = localStorage.getItem(CHAVES[provedorNome]) || padraoDoProvedor();
+    if (fixado) {
+      provedorSelect.value = fixado;
+    } else {
+      provedorSelect.value = provedorNome;
+    }
+    agentInput.value = localStorage.getItem(chaveAgente()) || padraoDoProvedor();
     agentInput.placeholder = provedorNome === "cartesia"
       ? "cole aqui o Agent ID do agente Cartesia"
       : "cole aqui o Agent ID da ElevenLabs";
@@ -128,7 +139,7 @@ function init(root) {
       return;
     }
     agentInput.value = agenteId;
-    localStorage.setItem(CHAVES[provedorNome], agenteId);
+    localStorage.setItem(chaveAgente(), agenteId);
     toggle.disabled = true;
     cena("conectando", "Conectando com " + (provedorNome === "cartesia" ? "a Cartesia" : "a ElevenLabs") + "…");
 

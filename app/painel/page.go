@@ -2,6 +2,7 @@ package painel
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/emersonjoe/trilha"
@@ -15,8 +16,17 @@ import (
 // ListParams embutido carrega page, sort, dir e q do endereço.
 type filtro struct {
 	trilha.ListParams
+	Agente string `form:"agente"`
 	Tipo   string `form:"tipo"`
 	Status string `form:"status"`
+}
+
+// agenteAtual normaliza o agente do filtro ("", wavehub, matarazzo).
+func (f filtro) agenteAtual() string {
+	if atendimento.AgenteValido(f.Agente) {
+		return f.Agente
+	}
+	return ""
 }
 
 // Page renderiza GET /painel: resumo com atualização periódica e a tabela
@@ -34,10 +44,10 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 	// O fragmento #resumo é o que o ui.Poll pede a cada 6s: o painel vivo
 	// durante a demonstração, sem recarregar a página.
 	if c.Fragment() == "resumo" {
-		return resumo(c, store), nil
+		return resumo(c, store, f.agenteAtual()), nil
 	}
 
-	filtroAtendimento := atendimento.Filtro{ListParams: f.ListParams}
+	filtroAtendimento := atendimento.Filtro{ListParams: f.ListParams, Agente: f.agenteAtual()}
 	if atendimento.Tipo(f.Tipo).Valido() {
 		filtroAtendimento.Tipo = atendimento.Tipo(f.Tipo)
 	}
@@ -51,7 +61,7 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 			h.P(h.Class("wh-sub"), h.Text("Tudo o que o agente de voz registra, em tempo real — chamados, segundas vias e religues.")),
 			ui.ButtonLink("/agente", ui.Outline(), h.Text("Configurar o agente")),
 		),
-		h.Div(h.ID("resumo"), resumo(c, store), ui.Poll("6s", "")),
+		h.Div(h.ID("resumo"), resumo(c, store, f.agenteAtual()), ui.Poll("6s", "")),
 		ui.DataTable(c, colunas(c), atts, ui.ListState{
 			Params:  f.ListParams,
 			Total:   total,
@@ -72,9 +82,17 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 }
 
 // resumo é o fragmento pollado: os contadores e os últimos eventos.
-func resumo(c *trilha.Ctx, store *atendimento.Store) h.Node {
-	porStatus := store.ContagemPorStatus()
-	eventos := store.Ultimos(5)
+func resumo(c *trilha.Ctx, store *atendimento.Store, agente string) h.Node {
+	porStatus := store.ContagemPorStatus(agente)
+	porAgente := store.PorAgente()
+	eventos := store.Ultimos(5, agente)
+
+	chips := []h.Node{h.Span(h.Class("wh-chips-rotulo"), h.Text("Agentes:"))}
+	for _, nome := range atendimento.Agentes {
+		chips = append(chips, h.A(h.Href("/painel?agente="+nome), h.Class("wh-agente-link"),
+			ui.Badge(h.Class("wh-agente wh-agente-"+nome),
+				h.Text(rotuloAgente(nome)+" · "+strconv.Itoa(porAgente[nome])))))
+	}
 
 	var lista []h.Node
 	for _, a := range eventos {
@@ -91,11 +109,12 @@ func resumo(c *trilha.Ctx, store *atendimento.Store) h.Node {
 	}
 
 	return ui.Stack(
+		h.Div(append([]h.Node{h.Class("wh-chips")}, chips...)...),
 		ui.Grid(
 			ui.Stat("Abertos", fmt.Sprintf("%d", porStatus[atendimento.StatusAberto])),
 			ui.Stat("Em atendimento", fmt.Sprintf("%d", porStatus[atendimento.StatusEmAtendimento])),
-			ui.Stat("Resolvidos hoje", fmt.Sprintf("%d", store.ResolvidosHoje(time.Now()))),
-			ui.Stat("Total registrado", fmt.Sprintf("%d", store.Total())),
+			ui.Stat("Resolvidos hoje", fmt.Sprintf("%d", store.ResolvidosHoje(time.Now(), agente))),
+			ui.Stat(legendaTotal(agente), strconv.Itoa(totalDoAgente(store, agente))),
 		),
 		ui.Card(
 			ui.CardHeader(
@@ -105,6 +124,29 @@ func resumo(c *trilha.Ctx, store *atendimento.Store) h.Node {
 			ui.CardContent(h.Ul(append([]h.Node{h.Class("wh-eventos")}, lista...)...)),
 		),
 	)
+}
+
+func legendaTotal(agente string) string {
+	if agente == atendimento.AgenteMatarazzo {
+		return "Total do Matarazzo"
+	}
+	if agente == atendimento.AgenteWavehub {
+		return "Total do WaveHub"
+	}
+	return "Total registrado"
+}
+
+// totalDoAgente conta tudo do agente (a tabela pagina; o stat resume).
+func totalDoAgente(store *atendimento.Store, agente string) int {
+	atts, _ := store.Listar(atendimento.Filtro{Agente: agente})
+	return len(atts)
+}
+
+func rotuloAgente(nome string) string {
+	if nome == atendimento.AgenteMatarazzo {
+		return "Matarazzo"
+	}
+	return "WaveHub"
 }
 
 func facetas(f filtro) h.Node {
@@ -121,12 +163,21 @@ func facetas(f filtro) h.Node {
 	}
 	return h.Div(h.Class("wh-facetas"),
 		ui.Select(append([]h.Node{
+			h.ID("f-agente"), h.Name("agente"), h.Aria("label", "Filtrar por agente"),
+		}, opcoes(f.agenteAtual(), agentes)...)...),
+		ui.Select(append([]h.Node{
 			h.ID("f-tipo"), h.Name("tipo"), h.Aria("label", "Filtrar por tipo"),
 		}, opcoes(f.Tipo, tipos)...)...),
 		ui.Select(append([]h.Node{
 			h.ID("f-status"), h.Name("status"), h.Aria("label", "Filtrar por status"),
 		}, opcoes(f.Status, statusOpcoes)...)...),
 	)
+}
+
+var agentes = [][2]string{
+	{"", "Todos os agentes"},
+	{atendimento.AgenteWavehub, "WaveHub"},
+	{atendimento.AgenteMatarazzo, "Matarazzo"},
 }
 
 var tipos = [][2]string{
@@ -147,6 +198,9 @@ func colunas(c *trilha.Ctx) ui.Columns[*atendimento.Atendimento] {
 	return ui.Columns[*atendimento.Atendimento]{
 		{Key: "protocolo", Label: "Protocolo", Sort: true, Cell: func(a *atendimento.Atendimento) h.Node {
 			return h.Strong(h.Text(a.Protocolo))
+		}},
+		{Key: "agente", Label: "Agente", Cell: func(a *atendimento.Atendimento) h.Node {
+			return BadgeAgente(a.Agente)
 		}},
 		{Key: "cliente", Label: "Cliente", Cell: func(a *atendimento.Atendimento) h.Node {
 			if a.ClienteNome == "" {
@@ -174,6 +228,13 @@ func colunas(c *trilha.Ctx) ui.Columns[*atendimento.Atendimento] {
 			return h.Span(h.Class("wh-quando"), h.Text(Quando(c, a.CriadoEm)))
 		}},
 	}
+}
+
+func BadgeAgente(nome string) h.Node {
+	if !atendimento.AgenteValido(nome) {
+		nome = atendimento.AgenteWavehub
+	}
+	return ui.Badge(h.Class("wh-agente wh-agente-"+nome), h.Text(rotuloAgente(nome)))
 }
 
 func BadgeTipo(t atendimento.Tipo) h.Node {

@@ -15,9 +15,12 @@ import (
 	app_api_hello "github.com/emersonjoe/voice-based-customer-service/app/api/hello"
 	app_api_tools_abrir_chamado_tecnico "github.com/emersonjoe/voice-based-customer-service/app/api/tools/abrir_chamado_tecnico"
 	app_api_tools_enviar_segunda_via_boleto "github.com/emersonjoe/voice-based-customer-service/app/api/tools/enviar_segunda_via_boleto"
+	app_api_tools_matarazzo_consultar_guia "github.com/emersonjoe/voice-based-customer-service/app/api/tools/matarazzo/consultar_guia"
+	app_api_tools_matarazzo_criar_reserva "github.com/emersonjoe/voice-based-customer-service/app/api/tools/matarazzo/criar_reserva"
 	app_api_tools_solicitar_religue_confirmacao "github.com/emersonjoe/voice-based-customer-service/app/api/tools/solicitar_religue_confirmacao"
 	app_api_voz_assinada "github.com/emersonjoe/voice-based-customer-service/app/api/voz/assinada"
 	app_api_voz_cartesia "github.com/emersonjoe/voice-based-customer-service/app/api/voz/cartesia"
+	app_matarazzo "github.com/emersonjoe/voice-based-customer-service/app/matarazzo"
 	app_painel "github.com/emersonjoe/voice-based-customer-service/app/painel"
 	app_painel_chamado_id_ "github.com/emersonjoe/voice-based-customer-service/app/painel/chamado/id_"
 )
@@ -78,6 +81,18 @@ func newApp() *trilha.App {
 		},
 	})
 	a.Register(trilha.Route{
+		Pattern: "/api/tools/matarazzo/consultar_guia",
+		Methods: map[string]trilha.HandlerFunc{
+			"POST": app_api_tools_matarazzo_consultar_guia.POST,
+		},
+	})
+	a.Register(trilha.Route{
+		Pattern: "/api/tools/matarazzo/criar_reserva",
+		Methods: map[string]trilha.HandlerFunc{
+			"POST": app_api_tools_matarazzo_criar_reserva.POST,
+		},
+	})
+	a.Register(trilha.Route{
 		Pattern: "/api/tools/solicitar_religue_confirmacao",
 		Methods: map[string]trilha.HandlerFunc{
 			"POST": app_api_tools_solicitar_religue_confirmacao.POST,
@@ -94,6 +109,11 @@ func newApp() *trilha.App {
 		Methods: map[string]trilha.HandlerFunc{
 			"GET": app_api_voz_cartesia.GET,
 		},
+	})
+	a.Register(trilha.Route{
+		Pattern: "/matarazzo",
+		Page:    app_matarazzo.Page,
+		Layouts: []trilha.LayoutFunc{app.Layout},
 	})
 	a.Register(trilha.Route{
 		Pattern: "/painel",

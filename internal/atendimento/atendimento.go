@@ -26,10 +26,11 @@ const (
 	TipoChamadoTecnico Tipo = "chamado_tecnico"
 	TipoSegundaVia     Tipo = "segunda_via"
 	TipoReligue        Tipo = "religue"
+	TipoReserva        Tipo = "reserva"
 )
 
 // Validos são os tipos que a API aceita.
-var Validos = []Tipo{TipoChamadoTecnico, TipoSegundaVia, TipoReligue}
+var Validos = []Tipo{TipoChamadoTecnico, TipoSegundaVia, TipoReligue, TipoReserva}
 
 // Validodevolve se o tipo existe.
 func (t Tipo) Valido() bool { return slices.Contains(Validos, t) }
@@ -43,6 +44,8 @@ func (t Tipo) Prefixo() string {
 		return "BV"
 	case TipoReligue:
 		return "RG"
+	case TipoReserva:
+		return "RS"
 	}
 	return "AT"
 }
@@ -56,6 +59,8 @@ func (t Tipo) Rotulo() string {
 		return "Segunda via de boleto"
 	case TipoReligue:
 		return "Religue"
+	case TipoReserva:
+		return "Reserva"
 	}
 	return string(t)
 }
@@ -148,10 +153,23 @@ type Cliente struct {
 	Faturas  []Fatura `json:"faturas"`
 }
 
+// Agentes são os atendentes de voz da POC; o painel separa por eles.
+const (
+	AgenteWavehub   = "wavehub"
+	AgenteMatarazzo = "matarazzo"
+)
+
+// Agentes é a lista válida, na ordem do painel.
+var Agentes = []string{AgenteWavehub, AgenteMatarazzo}
+
+// AgenteValido diz se o nome de agente existe.
+func AgenteValido(a string) bool { return slices.Contains(Agentes, a) }
+
 // Atendimento é o registro que o agente de voz (ou o painel) cria.
 type Atendimento struct {
 	ID           string            `json:"id"`
 	Protocolo    string            `json:"protocolo"`
+	Agente       string            `json:"agente"`
 	Tipo         Tipo              `json:"tipo"`
 	ClienteCPF   string            `json:"cliente_cpf"`
 	ClienteNome  string            `json:"cliente_nome"`
@@ -172,6 +190,22 @@ type Filtro struct {
 	trilha.ListParams
 	Tipo   Tipo
 	Status Status
+	Agente string
+}
+
+// PorAgente conta os atendimentos de cada agente, para os chips do painel.
+func (s *Store) PorAgente() map[string]int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	m := make(map[string]int, len(Agentes))
+	for _, a := range s.Atendimentos {
+		agente := a.Agente
+		if !AgenteValido(agente) {
+			agente = AgenteWavehub
+		}
+		m[agente]++
+	}
+	return m
 }
 
 // Store é o repositório: carrega de data/atendimentos.json, serve em memória
@@ -228,12 +262,15 @@ func (s *Store) salvar() error {
 // Criar registra um atendimento e devolve a cópia criada. O nome informado
 // na conversa entra como reserva: quando o CPF está no cadastro, o nome da
 // base prevalece.
-func (s *Store) Criar(t Tipo, cpf, nome, resumo, descricao string, p Prioridade, origem, conversaID string, detalhes map[string]string) *Atendimento {
+func (s *Store) Criar(t Tipo, agente, cpf, nome, resumo, descricao string, p Prioridade, origem, conversaID string, detalhes map[string]string) *Atendimento {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	if s.Seq == nil {
 		s.Seq = map[string]int{}
+	}
+	if !AgenteValido(agente) {
+		agente = AgenteWavehub
 	}
 	cpf = SoDigitos(cpf)
 	if base := s.nomeDe(cpf); base != "" {
@@ -244,6 +281,7 @@ func (s *Store) Criar(t Tipo, cpf, nome, resumo, descricao string, p Prioridade,
 	att := &Atendimento{
 		ID:           strconv.FormatInt(time.Now().UnixNano(), 36),
 		Protocolo:    fmt.Sprintf("%s-%d-%04d", t.Prefixo(), ano, s.Seq[t.Prefixo()]),
+		Agente:       agente,
 		Tipo:         t,
 		ClienteCPF:   cpf,
 		ClienteNome:  nome,
@@ -286,6 +324,9 @@ func (s *Store) Listar(f Filtro) ([]*Atendimento, int) {
 			continue
 		}
 		if f.Status != "" && a.Status != f.Status {
+			continue
+		}
+		if AgenteValido(f.Agente) && a.Agente != f.Agente {
 			continue
 		}
 		if q != "" && !casa(a, q) {
@@ -375,40 +416,49 @@ func (s *Store) AtualizarStatus(id string, st Status) bool {
 	return false
 }
 
-// ContagemPorStatus resume o painel.
-func (s *Store) ContagemPorStatus() map[Status]int {
+// ContagemPorStatus resume o painel; agente vazio conta todos.
+func (s *Store) ContagemPorStatus(agente string) map[Status]int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	m := map[Status]int{}
 	for _, a := range s.Atendimentos {
+		if AgenteValido(agente) && a.Agente != agente {
+			continue
+		}
 		m[a.Status]++
 	}
 	return m
 }
 
-// ResolvidosHoje conta os resolvidos desde a meia-noite local.
-func (s *Store) ResolvidosHoje(agora time.Time) int {
+// ResolvidosHoje conta os resolvidos desde a meia-noite local; agente
+// vazio conta todos.
+func (s *Store) ResolvidosHoje(agora time.Time, agente string) int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	inicio := time.Date(agora.Year(), agora.Month(), agora.Day(), 0, 0, 0, 0, agora.Location())
 	n := 0
 	for _, a := range s.Atendimentos {
-		if a.Status == StatusResolvido && a.AtualizadoEm.After(inicio) {
+		if a.Status == StatusResolvido && a.AtualizadoEm.After(inicio) &&
+			(!AgenteValido(agente) || a.Agente == agente) {
 			n++
 		}
 	}
 	return n
 }
 
-// Ultimos devolve os n atendimentos mais recentes, para o feed do painel.
-func (s *Store) Ultimos(n int) []*Atendimento {
+// Ultimos devolve os n atendimentos mais recentes (do agente dado; vazio
+// = todos), para o feed do painel.
+func (s *Store) Ultimos(n int, agente string) []*Atendimento {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if len(s.Atendimentos) < n {
-		n = len(s.Atendimentos)
-	}
 	fora := make([]*Atendimento, 0, n)
-	for _, a := range s.Atendimentos[:n] {
+	for _, a := range s.Atendimentos {
+		if len(fora) >= n {
+			break
+		}
+		if AgenteValido(agente) && a.Agente != agente {
+			continue
+		}
 		copia := *a
 		fora = append(fora, &copia)
 	}
@@ -608,13 +658,13 @@ func (s *Store) semear() {
 		},
 	}
 
-	ch := s.Criar(TipoChamadoTecnico, "52998224725", "", "Sem conexão desde a madrugada",
+	ch := s.Criar(TipoChamadoTecnico, AgenteWavehub, "52998224725", "", "Sem conexão desde a madrugada",
 		"A internet caiu por volta das 3h. A luz do modem fica vermelha e o wi-fi não aparece em nenhum celular da casa.",
 		PrioridadeAlta, "voz", "demo-seed-1", map[string]string{"problema": "sem_conexao"})
 	ch.Status = StatusEmAtendimento
 	ch.AtualizadoEm = agora.Add(-40 * time.Minute)
 
-	bv := s.Criar(TipoSegundaVia, "16899535009", "", "Segunda via enviada por e-mail",
+	bv := s.Criar(TipoSegundaVia, AgenteWavehub, "16899535009", "", "Segunda via enviada por e-mail",
 		"Cliente pediu a segunda via da fatura de setembro por e-mail.",
 		PrioridadeBaixa, "voz", "demo-seed-2", map[string]string{
 			"canal": "email", "enviado_para": "marina.lopes@example.com",
@@ -623,7 +673,7 @@ func (s *Store) semear() {
 	bv.Status = StatusResolvido
 	bv.AtualizadoEm = agora.Add(-3 * time.Hour)
 
-	s.Criar(TipoReligue, "11144477735", "", "Religue solicitado com comprovação de pagamento",
+	s.Criar(TipoReligue, AgenteWavehub, "11144477735", "", "Religue solicitado com comprovação de pagamento",
 		"Cliente confirmou o pagamento via Pix e enviou o comprovante pelo WhatsApp.",
 		PrioridadeAlta, "painel", "", map[string]string{
 			"forma_pagamento": "pix", "valor": BRL(11990),

@@ -41,7 +41,7 @@ func TestCriarEListar(t *testing.T) {
 	s := &Store{Seq: map[string]int{}}
 	s.semear()
 
-	a := s.Criar(TipoChamadoTecnico, "111.444.777-35", "Ana Beatriz Souza", "Sem sinal", "Modem apagado.", PrioridadeAlta, "voz", "", nil)
+	a := s.Criar(TipoChamadoTecnico, AgenteWavehub, "111.444.777-35", "Ana Beatriz Souza", "Sem sinal", "Modem apagado.", PrioridadeAlta, "voz", "", nil)
 	if a.Protocolo[:3] != "CH-" {
 		t.Errorf("protocolo = %s; queria prefixo CH-", a.Protocolo)
 	}
@@ -49,7 +49,7 @@ func TestCriarEListar(t *testing.T) {
 		t.Errorf("cliente nome = %q; queria o nome da base", a.ClienteNome)
 	}
 
-	b := s.Criar(TipoReligue, "11144477735", "", "Religue", "Pagou e pediu religue.", PrioridadeAlta, "voz", "", nil)
+	b := s.Criar(TipoReligue, AgenteWavehub, "11144477735", "", "Religue", "Pagou e pediu religue.", PrioridadeAlta, "voz", "", nil)
 	if b.Protocolo[:3] != "RG-" {
 		t.Errorf("protocolo = %s; queria prefixo RG-", b.Protocolo)
 	}
@@ -76,7 +76,7 @@ func TestCriarEListar(t *testing.T) {
 func TestAtualizarStatus(t *testing.T) {
 	s := &Store{Seq: map[string]int{}}
 	s.semear()
-	a := s.Criar(TipoChamadoTecnico, "52998224725", "", "Lentidão", "Está arrastando.", PrioridadeMedia, "voz", "", nil)
+	a := s.Criar(TipoChamadoTecnico, AgenteWavehub, "52998224725", "", "Lentidão", "Está arrastando.", PrioridadeMedia, "voz", "", nil)
 
 	if !s.AtualizarStatus(a.ID, StatusEmAtendimento) {
 		t.Fatal("atualização falhou para id existente")
@@ -132,7 +132,7 @@ func TestAbrirArquivo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Abrir: %v", err)
 	}
-	s.Criar(TipoSegundaVia, "16899535009", "", "2ª via", "Por e-mail.", PrioridadeBaixa, "voz", "", nil)
+	s.Criar(TipoSegundaVia, AgenteWavehub, "16899535009", "", "2ª via", "Por e-mail.", PrioridadeBaixa, "voz", "", nil)
 
 	deNovo, err := Abrir(path)
 	if err != nil {
@@ -140,5 +140,34 @@ func TestAbrirArquivo(t *testing.T) {
 	}
 	if _, total := deNovo.Listar(Filtro{}); total != 4 { // 3 semeados + 1
 		t.Errorf("total após reabrir = %d; queria 4", total)
+	}
+}
+
+func TestReservasEAgentes(t *testing.T) {
+	s := &Store{Seq: map[string]int{}}
+	s.semear()
+
+	r := s.Criar(TipoReserva, AgenteMatarazzo, "", "Marina Lopes", "Reserva: Taraz — sexta 20:00 (2 pessoas)",
+		"Jantar no Taraz.", PrioridadeBaixa, "voz", "", map[string]string{"local": "Taraz"})
+	if r.Protocolo[:3] != "RS-" {
+		t.Errorf("protocolo da reserva = %s; queria prefixo RS-", r.Protocolo)
+	}
+	if r.Agente != AgenteMatarazzo {
+		t.Errorf("agente = %q; queria %q", r.Agente, AgenteMatarazzo)
+	}
+
+	a := s.Criar(TipoChamadoTecnico, "", "", "", "Teste sem agente", "deve virar wavehub", PrioridadeMedia, "voz", "", nil)
+	if a.Agente != AgenteWavehub {
+		t.Errorf("agente padrão = %q; queria %q", a.Agente, AgenteWavehub)
+	}
+
+	porAgente := s.PorAgente()
+	if porAgente[AgenteMatarazzo] != 1 {
+		t.Errorf("PorAgente()[matarazzo] = %d; queria 1", porAgente[AgenteMatarazzo])
+	}
+
+	soMt, n := s.Listar(Filtro{Agente: AgenteMatarazzo})
+	if n != 1 || soMt[0].Agente != AgenteMatarazzo {
+		t.Errorf("filtro por agente devolveu %d; queria 1", n)
 	}
 }

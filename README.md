@@ -57,6 +57,17 @@ exporte `ELEVENLABS_API_KEY` no servidor: o widget passa a pedir a ele uma
 URL de sessão assinada (curta-viva) em `GET /api/voz/assinada` em vez de
 conectar com o Agent ID direto. A chave nunca chega ao navegador.
 
+### Agentes da POC
+
+| Agente | Página | Provedor | Agent ID (env) | Fluxos |
+|---|---|---|---|---|
+| **WaveHub** | `/` | ElevenLabs + Cartesia | `ELEVENLABS_AGENT_ID` / `CARTESIA_AGENT_ID` | chamado técnico, segunda via, religue |
+| **Guia Matarazzo** | `/matarazzo` | Cartesia | `MATARAZZO_AGENT_ID` | guia do complexo, reservas (hotel Rosewood e restaurantes) |
+
+O painel `/painel` separa os atendimentos por agente: chips com contagem,
+filtro `?agente=`, coluna e badge por agente. Reservas usam o tipo
+`reserva` com protocolo `RS-AAAA-NNNN`.
+
 ### Provedores de voz
 
 O widget tem um seletor **Provedor: ElevenLabs | Cartesia** para comparar

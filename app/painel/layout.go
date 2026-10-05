@@ -14,6 +14,7 @@ func Layout(c *trilha.Ctx, children h.Node) (h.Node, error) {
 		Nav: []ui.NavGroup{
 			{Label: "Atendimento", Items: []ui.NavItem{
 				{Href: "/painel", Label: "Visão geral", Icon: "house"},
+				{Href: "/matarazzo", Label: "Matarazzo", Icon: "settings"},
 				{Href: "/agente", Label: "Agente de voz", Icon: "settings"},
 			}},
 		},

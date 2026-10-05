@@ -15,7 +15,7 @@
       "faturas": [
         {
           "valor_centavos": 11990,
-          "vencimento": "2026-10-01T11:08:54.827666-03:00",
+          "vencimento": "2026-10-01T14:57:59.908111-03:00",
           "paga": false,
           "linha_digitavel": "34191.09008 11144.477735 16899.535009 5 91240000011990"
         }
@@ -31,7 +31,7 @@
       "faturas": [
         {
           "valor_centavos": 8990,
-          "vencimento": "2026-10-13T11:08:54.827666-03:00",
+          "vencimento": "2026-10-13T14:57:59.908111-03:00",
           "paga": false,
           "linha_digitavel": "34191.09008 16899.535009 52998.224725 7 91240000008990"
         }
@@ -47,7 +47,7 @@
       "faturas": [
         {
           "valor_centavos": 14990,
-          "vencimento": "2026-10-17T11:08:54.827666-03:00",
+          "vencimento": "2026-10-17T14:57:59.908111-03:00",
           "paga": true,
           "linha_digitavel": "34191.09008 52998.224725 11144.477735 6 91240000014990"
         }
@@ -56,8 +56,9 @@
   },
   "atendimentos": [
     {
-      "id": "dlwypske0tao",
+      "id": "dlx3l6yw0wc8",
       "protocolo": "RG-2026-0001",
+      "agente": "wavehub",
       "tipo": "religue",
       "cliente_cpf": "11144477735",
       "cliente_nome": "Ana Beatriz Souza",
@@ -71,12 +72,13 @@
         "valor": "R$ 119,90",
         "vencimento": "01/10/2026"
       },
-      "criado_em": "2026-10-05T11:08:54.827922-03:00",
-      "atualizado_em": "2026-10-05T11:08:54.827922-03:00"
+      "criado_em": "2026-10-05T14:57:59.908355-03:00",
+      "atualizado_em": "2026-10-05T14:57:59.908355-03:00"
     },
     {
-      "id": "dlwypskdxfds",
+      "id": "dlx3l6yvxu00",
       "protocolo": "BV-2026-0001",
+      "agente": "wavehub",
       "tipo": "segunda_via",
       "cliente_cpf": "16899535009",
       "cliente_nome": "Marina Lopes",
@@ -92,12 +94,13 @@
         "valor": "R$ 89,90",
         "vencimento": "13/10/2026"
       },
-      "criado_em": "2026-10-05T11:08:54.827765-03:00",
-      "atualizado_em": "2026-10-05T08:08:54.827666-03:00"
+      "criado_em": "2026-10-05T14:57:59.908213-03:00",
+      "atualizado_em": "2026-10-05T11:57:59.908111-03:00"
     },
     {
-      "id": "dlwypskdvdb4",
+      "id": "dlx3l6yvvou8",
       "protocolo": "CH-2026-0001",
+      "agente": "wavehub",
       "tipo": "chamado_tecnico",
       "cliente_cpf": "52998224725",
       "cliente_nome": "Carlos Eduardo Ramos",
@@ -110,8 +113,8 @@
       "detalhes": {
         "problema": "sem_conexao"
       },
-      "criado_em": "2026-10-05T11:08:54.827669-03:00",
-      "atualizado_em": "2026-10-05T10:28:54.827666-03:00"
+      "criado_em": "2026-10-05T14:57:59.908112-03:00",
+      "atualizado_em": "2026-10-05T14:17:59.908111-03:00"
     }
   ]
 }

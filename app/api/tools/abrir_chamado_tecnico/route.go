@@ -88,7 +88,7 @@ func POST(c *trilha.Ctx) error {
 		detalhes["email"] = email
 	}
 
-	att := store.Criar(atendimento.TipoChamadoTecnico, cpf, nome, resumoDo(problema, descricao),
+	att := store.Criar(atendimento.TipoChamadoTecnico, atendimento.AgenteWavehub, cpf, nome, resumoDo(problema, descricao),
 		descricao, prioridade, origem(r),
 		apiutil.Texto(corpo, "conversation_id"), detalhes)
 

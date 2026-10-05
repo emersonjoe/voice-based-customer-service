@@ -30,6 +30,7 @@ func Layout(c *trilha.Ctx, children h.Node) (h.Node, error) {
 				ui.Nav(
 					ui.NavLink("/", "Demonstração", c.Request().URL.Path == "/"),
 					ui.NavLink("/painel", "Painel", c.Request().URL.Path == "/painel"),
+					ui.NavLink("/matarazzo", "Matarazzo", c.Request().URL.Path == "/matarazzo"),
 					ui.NavLink("/agente", "Agente IA", c.Request().URL.Path == "/agente"),
 				),
 				ui.Spacer(),

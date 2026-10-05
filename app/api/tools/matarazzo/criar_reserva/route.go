@@ -38,7 +38,11 @@ func POST(c *trilha.Ctx) error {
 			"Não entendi o corpo da requisição: esperava JSON com tipo, data, horario, pessoas e nome_hospede."))
 	}
 
-	local := strings.ToLower(strings.TrimSpace(apiutil.Texto(corpo, "tipo")))
+	localFalado := strings.ToLower(strings.TrimSpace(apiutil.Texto(corpo, "tipo")))
+	local, aproximado := localFalado, false
+	if resolvido, ok := matarazzo.ResolverLocal(localFalado); ok {
+		local, aproximado = resolvido.ID, true
+	}
 	nome := strings.TrimSpace(apiutil.Texto(corpo, "nome_hospede"))
 	data := strings.TrimSpace(apiutil.Texto(corpo, "data"))
 	horario := strings.TrimSpace(apiutil.Texto(corpo, "horario"))
@@ -50,9 +54,6 @@ func POST(c *trilha.Ctx) error {
 		case "mata_citta":
 			return c.JSON(http.StatusOK, falha("sem_reserva_online",
 				"O Mata Città não aceita reserva online — a entrada é por lista de espera no local. Sugira chegar cedo ou deixar o nome no balcão."))
-		case "gui":
-			return c.JSON(http.StatusOK, falha("tipo_invalido",
-				"Para reservas, use os locais da lista: hotel_rosewood, le_jardin, blaise, taraz, rabo_di_galo e lavva."))
 		}
 		return c.JSON(http.StatusOK, falha("tipo_invalido",
 			"Os locais reserváveis são: hotel_rosewood, le_jardin, blaise, taraz, rabo_di_galo e lavva."))
@@ -94,12 +95,16 @@ func POST(c *trilha.Ctx) error {
 		apiutil.Texto(corpo, "conversation_id"), detalhes)
 
 	c.Log().Info("ferramenta criar_reserva_matarazzo: reserva registrada", "protocolo", att.Protocolo)
+	aviso := ""
+	if aproximado && localFalado != local {
+		aviso = "Interpretei o local como " + rotulo + " — confirme com o cliente. "
+	}
 	return c.JSON(http.StatusOK, resposta{
 		Status:    "solicitacao_registrada",
 		Protocolo: att.Protocolo,
 		Agente:    atendimento.AgenteMatarazzo,
 		Local:     rotulo,
-		Mensagem: "Reserva no " + rotulo + " registrada para " + quando.Format("02/01/2006") +
+		Mensagem: aviso + "Reserva no " + rotulo + " registrada para " + quando.Format("02/01/2006") +
 			" às " + horario + ", para " + strconv.Itoa(pessoas) + " pessoa(s), no nome de " + nome +
 			". O protocolo é " + att.Protocolo + ".",
 	})

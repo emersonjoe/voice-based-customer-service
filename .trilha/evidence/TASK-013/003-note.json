@@ -1,0 +1,10 @@
+{
+  "task": "TASK-013",
+  "seq": 3,
+  "kind": "note",
+  "at": "2026-10-05T19:08:07Z",
+  "by": "cli",
+  "exit_code": 0,
+  "passed": true,
+  "note": "Datas relativas: instruções do Gui agora usam {{system__time}} (fuso São Paulo) para converter 'hoje/amanhã' em AAAA-MM-DD. Guia enriquecido: tópicos por restaurante (le_jardin, blaise, taraz, rabo_di_galo) com horário e menu (pratos assinatura, Mata Città com 7 ambientes e chefs); enum da tool expandido e live (versão av_1mYR46cQRsL6xkJbPLxAyr). Handshake ainda 402 quota_exceeded — aguardando créditos"
+}

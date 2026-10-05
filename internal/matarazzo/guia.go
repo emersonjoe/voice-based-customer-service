@@ -14,6 +14,10 @@ const (
 	TopicoComplexo     Topico = "complexo"
 	TopicoHotel        Topico = "hotel_rosewood"
 	TopicoRestaurantes Topico = "restaurantes"
+	TopicoLeJardin     Topico = "le_jardin"
+	TopicoBlaise       Topico = "blaise"
+	TopicoTaraz        Topico = "taraz"
+	TopicoRaboDiGalo   Topico = "rabo_di_galo"
 	TopicoMataCitta    Topico = "mata_citta"
 	TopicoLojas        Topico = "lojas"
 	TopicoEventos      Topico = "eventos"
@@ -22,9 +26,11 @@ const (
 
 // Entrada é uma seção do guia.
 type Entrada struct {
-	Titulo string
-	Texto  string
-	Dicas  []string
+	Titulo  string
+	Texto   string
+	Dicas   []string
+	Horario string
+	Menu    []string // destaques do cardápio, quando houver
 }
 
 // Guia é o conteúdo falável do concierge.
@@ -45,16 +51,74 @@ var Guia = map[Topico]Entrada{
 	},
 	TopicoRestaurantes: {
 		Titulo: "Restaurantes do complexo",
-		Texto: "Dentro do hotel: o Le Jardin, grand café aberto vinte e quatro horas com opções kosher e mesas no jardim; " +
-			"o Blaise, brasserie francesa do chef Fernando Bouzan com ingredientes brasileiros; o Taraz, culinária sul-americana que aparece no Guia Michelin; " +
-			"e o bar Rabo di Galo, com jazz ao vivo.",
-		Dicas: []string{"Reserve com antecedência para fim de semana", "O Taraz costuma exigir reserva com alguns dias"},
+		Texto: "São dois mundos: dentro do hotel Rosewood ficam o Le Jardin, o Blaise, o Taraz e o bar Rabo di Galo; " +
+			"e o Mata Città, o grande espaço italiano do complexo, com sete ambientes. Pergunte qual deles o visitante quer conhecer em detalhe.",
+		Dicas: []string{"Reserve com antecedência para fim de semana", "Posso detalhar qualquer um e já fazer a reserva"},
+	},
+	TopicoLeJardin: {
+		Titulo:  "Le Jardin — grand café do Rosewood (24 horas)",
+		Horario: "Aberto 24 horas",
+		Texto: "O grand café do hotel: do café da manhã ao lanche da madrugada, com opções kosher e mesas no jardim. " +
+			"Culinária refinada em clima de conservatório — é a porta de entrada gastronômica do Rosewood.",
+		Menu: []string{
+			"Café da manhã e brunch servidos a qualquer hora",
+			"Bife ancho e pratos de bistrô de hotel de luxo",
+			"Polvo na grelha e sobremesas de confeitaria",
+			"Opções kosher e mesa no jardim",
+		},
+		Dicas: []string{"Não precisa ser hóspede", "Reservável pela nossa ferramenta"},
+	},
+	TopicoBlaise: {
+		Titulo:  "Blaise — brasserie francesa",
+		Horario: "Jantar; menu degustação sazonal",
+		Texto: "Brasserie de cozinha francesa assinada pelo chef Fernando Bouzan, com ingredientes brasileiros " +
+			"no comando dos clássicos franceses. É o restaurante mais formal do Rosewood.",
+		Menu: []string{
+			"Atum selado com purê de pistache",
+			"Vieiras salteadas com legumes",
+			"Camarão com palmito pupunha",
+			"Menu degustação sazonal do chef",
+		},
+		Dicas: []string{"Ideal para ocasiões especiais", "Reservável pela nossa ferramenta"},
+	},
+	TopicoTaraz: {
+		Titulo:  "Taraz — sul-americano (Guia Michelin)",
+		Horario: "Almoço e jantar; também atende no quarto",
+		Texto: "Culinária sul-americana contemporânea que aparece no Guia Michelin, com cardápio sazonal. " +
+			"É o único dos restaurantes que também serve o in-room dining do hotel.",
+		Menu: []string{
+			"Menu sazonal de raízes sul-americanas",
+			"Peixes e cortes grelhados na brasa",
+			"Coquetelaria com destilados regionais",
+		},
+		Dicas: []string{"Costuma exigir reserva com alguns dias", "Reservável pela nossa ferramenta"},
+	},
+	TopicoRaboDiGalo: {
+		Titulo:  "Rabo di Galo — bar de jazz",
+		Horario: "Fim de tarde até a noite, com pocket shows",
+		Texto: "Bar intimista ao lado do Le Jardin, com poucas mesas e palco para pocket shows de jazz ao vivo. " +
+			"Programa clássico: drink bem feito e música ao vivo.",
+		Menu: []string{
+			"Coquetelaria autoral e clássicos",
+			"Petiscos de bar de hotel",
+			"Programação de jazz e pocket shows",
+		},
+		Dicas: []string{"Mesas poucas: chegue cedo", "Reservável pela nossa ferramenta"},
 	},
 	TopicoMataCitta: {
-		Titulo: "Mata Città",
-		Texto: "O Mata Città é um espaço italiano de mil e seiscentos metros quadrados, com sete conceitos e cerca de quinhentos lugares, " +
-			"inspirado no cinema italiano dos anos sessenta e setenta: restaurante, bar, sorveteria e brunch.",
-		Dicas: []string{"Não aceita reserva online — chegue cedo ou deixe o nome na lista de espera no local", "Pratos a partir de valores acessíveis; bom para grupos"},
+		Titulo:  "Mata Città — Spettacolo Italiano",
+		Horario: "Do café da manhã (8h) ao jantar, todos os dias",
+		Texto: "Restaurante italiano de mil e seiscentos metros quadrados e cerca de quinhentos lugares, com sete ambientes " +
+			"inspirados no cinema italiano dos anos sessenta e setenta — entre eles o Dolce Vita (pátio com café e brunch o dia todo), " +
+			"o Capo (bar intimista), o Conde (homenagem a Francesco Matarazzo) e o Positano (costa italiana). " +
+			"Comandado pelos chefs Felipe Rodrigues e Thiago Saldiva, a casa celebra a generosidade italiana: pratos fartos para dividir no centro da mesa.",
+		Menu: []string{
+			"Pizzas que saem do padrão e massas artesanais generosas",
+			"Frutos do mar e clássicos italianos",
+			"Doces e gelatos no Dolce Vita",
+			"Pratos a partir de R$ 35; cardápio completo em matacitta.help/cardapio",
+		},
+		Dicas: []string{"Não aceita reserva online — chegue cedo ou deixe o nome na lista de espera no local", "Bom para grupos e para ir com crianças"},
 	},
 	TopicoLojas: {
 		Titulo: "Lojas",

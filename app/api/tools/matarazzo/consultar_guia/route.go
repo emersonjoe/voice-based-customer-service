@@ -19,6 +19,8 @@ type resposta struct {
 	Topico             string   `json:"topico,omitempty"`
 	Titulo             string   `json:"titulo,omitempty"`
 	Texto              string   `json:"texto,omitempty"`
+	Menu               []string `json:"menu,omitempty"`
+	Horario            string   `json:"horario,omitempty"`
 	Dicas              []string `json:"dicas,omitempty"`
 	TopicosDisponiveis []string `json:"topicos_disponiveis,omitempty"`
 	Mensagem           string   `json:"mensagem"`
@@ -53,6 +55,8 @@ func POST(c *trilha.Ctx) error {
 		Topico:   string(topico),
 		Titulo:   entrada.Titulo,
 		Texto:    entrada.Texto,
+		Menu:     entrada.Menu,
+		Horario:  entrada.Horario,
 		Dicas:    entrada.Dicas,
 		Mensagem: entrada.Titulo + ": " + entrada.Texto,
 	})

@@ -13,6 +13,7 @@ const ROTAS = {
 };
 
 const CLOSES = {
+  1006: "conexão recusada — verifique os créditos da conta Cartesia (Agents usage limit) e a chave do servidor",
   1008: "erro de protocolo",
   1009: "mensagem grande demais",
   1011: "falha na Cartesia",

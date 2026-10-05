@@ -37,6 +37,10 @@ Pré-requisitos: [Go 1.22+](https://go.dev) e a CLI do Trilha
 ./dev.sh        # carrega o .env local (TRILHA_SECRET, chaves) e sobe na :3210
 ```
 
+````
+lsof -ti :3210 | xargs kill && ./dev.sh
+```
+
 Ou direto, sem `.env`: `trilha dev --addr :3000`.
 
 Abra `http://localhost:3000`. Sem nenhuma configuração extra o app já sobe

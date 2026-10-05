@@ -1,0 +1,10 @@
+{
+  "task": "TASK-013",
+  "seq": 2,
+  "kind": "note",
+  "at": "2026-10-05T18:59:18Z",
+  "by": "cli",
+  "exit_code": 0,
+  "passed": true,
+  "note": "Falha de conexão em produção-diagnóstico: handshake wss devolve HTTP 402 quota_exceeded 'Agents usage limit reached' — créditos de Agent da conta Cartesia esgotados pelos testes do dia. Mensagem do widget atualizada para orientar. Não é código."
+}

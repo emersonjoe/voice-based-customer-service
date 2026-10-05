@@ -1,7 +1,7 @@
 ---
 id: TASK-011
 title: página /matarazzo com brandbook e widget Cartesia
-status: idea
+status: done
 spec: 002-dashboard-por-agente-agente-matarazzo-concierge-cartesia
 milestone: m2
 covers:
@@ -14,6 +14,7 @@ acceptance:
 checks:
   - trilha gen && trilha check
 created: "2026-10-05T14:47:58Z"
+updated: "2026-10-05T17:58:37Z"
 ---
 
 ### Objetivo

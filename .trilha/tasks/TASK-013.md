@@ -1,7 +1,7 @@
 ---
 id: TASK-013
 title: e2e concierge + regressão WaveHub
-status: idea
+status: verify
 spec: 002-dashboard-por-agente-agente-matarazzo-concierge-cartesia
 milestone: m3
 covers:
@@ -16,6 +16,7 @@ acceptance:
 checks:
   - trilha check && trilha vendor --check
 created: "2026-10-05T14:47:58Z"
+updated: "2026-10-05T17:58:46Z"
 ---
 
 ### Objetivo

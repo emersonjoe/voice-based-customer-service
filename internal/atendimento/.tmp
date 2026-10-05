@@ -15,7 +15,7 @@
       "faturas": [
         {
           "valor_centavos": 11990,
-          "vencimento": "2026-10-01T17:16:43.021145-03:00",
+          "vencimento": "2026-10-01T17:17:26.298276-03:00",
           "paga": false,
           "linha_digitavel": "34191.09008 11144.477735 16899.535009 5 91240000011990"
         }
@@ -31,7 +31,7 @@
       "faturas": [
         {
           "valor_centavos": 8990,
-          "vencimento": "2026-10-13T17:16:43.021145-03:00",
+          "vencimento": "2026-10-13T17:17:26.298276-03:00",
           "paga": false,
           "linha_digitavel": "34191.09008 16899.535009 52998.224725 7 91240000008990"
         }
@@ -47,7 +47,7 @@
       "faturas": [
         {
           "valor_centavos": 14990,
-          "vencimento": "2026-10-17T17:16:43.021145-03:00",
+          "vencimento": "2026-10-17T17:17:26.298276-03:00",
           "paga": true,
           "linha_digitavel": "34191.09008 52998.224725 11144.477735 6 91240000014990"
         }
@@ -56,7 +56,7 @@
   },
   "atendimentos": [
     {
-      "id": "dlx6jejykr9k",
+      "id": "dlx6jyfoogv4",
       "protocolo": "RG-2026-0001",
       "agente": "wavehub",
       "tipo": "religue",
@@ -72,11 +72,11 @@
         "valor": "R$ 119,90",
         "vencimento": "01/10/2026"
       },
-      "criado_em": "2026-10-05T17:16:43.021301-03:00",
-      "atualizado_em": "2026-10-05T17:16:43.021301-03:00"
+      "criado_em": "2026-10-05T17:17:26.29846-03:00",
+      "atualizado_em": "2026-10-05T17:17:26.29846-03:00"
     },
     {
-      "id": "dlx6jejyjbkg",
+      "id": "dlx6jyfomplc",
       "protocolo": "BV-2026-0001",
       "agente": "wavehub",
       "tipo": "segunda_via",
@@ -94,11 +94,11 @@
         "valor": "R$ 89,90",
         "vencimento": "13/10/2026"
       },
-      "criado_em": "2026-10-05T17:16:43.021234-03:00",
-      "atualizado_em": "2026-10-05T14:16:43.021145-03:00"
+      "criado_em": "2026-10-05T17:17:26.298379-03:00",
+      "atualizado_em": "2026-10-05T14:17:26.298276-03:00"
     },
     {
-      "id": "dlx6jejyhfo0",
+      "id": "dlx6jyfokjns",
       "protocolo": "CH-2026-0001",
       "agente": "wavehub",
       "tipo": "chamado_tecnico",
@@ -113,8 +113,8 @@
       "detalhes": {
         "problema": "sem_conexao"
       },
-      "criado_em": "2026-10-05T17:16:43.021146-03:00",
-      "atualizado_em": "2026-10-05T16:36:43.021145-03:00"
+      "criado_em": "2026-10-05T17:17:26.298278-03:00",
+      "atualizado_em": "2026-10-05T16:37:26.298276-03:00"
     }
   ]
 }

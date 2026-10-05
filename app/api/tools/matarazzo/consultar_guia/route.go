@@ -155,7 +155,7 @@ func responderBusca(c *trilha.Ctx, restaurante, busca string, topicoAproximado b
 		return c.JSON(http.StatusOK, resposta{
 			Status:     "sucesso",
 			Topico:     passo.lugar,
-			Aproximado: passo.aprox,
+			Aproximado: passo.aprox || topicoAproximado,
 			Resultados: achados,
 			Categorias: matarazzo.CategoriasCardapio(passo.lugar),
 			Mensagem:   mensagem,

@@ -606,3 +606,21 @@
 
 .mt-page .wh-bar { background: linear-gradient(180deg, #ceb678, #e8e1d7); }
 .mt-page .wh-feed li { background: rgb(206 182 120 / 12%); }
+
+/* select e campos legíveis sobre o tema escuro do Matarazzo */
+.mt-page .ui-select,
+.mt-page .ui-input {
+  background: #2a2a28;
+  color: var(--mt-creme);
+  border-color: rgb(206 182 120 / 35%);
+}
+
+.mt-page .ui-select option {
+  background: var(--mt-preto);
+  color: var(--mt-creme);
+}
+
+.mt-page label,
+.mt-page .ui-help {
+  color: rgb(232 225 215 / 75%);
+}

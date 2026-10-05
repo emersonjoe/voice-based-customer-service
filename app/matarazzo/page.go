@@ -28,7 +28,7 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 			),
 			ui.Lead(h.Text(
 				"Hotel Rosewood, restaurantes, lojas e eventos num só complexo histórico. "+
-					"Fale com o Gui: ele apresenta cada canto e registra a sua reserva.")),
+					"Fale com a Gia: ela apresenta cada canto e registra a sua reserva.")),
 			h.Div(h.Class("wh-cta"),
 				ui.ButtonLink("/painel", ui.Lg(), h.Class("mt-botao"), h.Text("Ver o painel ao vivo"), ui.Icon("arrow-right")),
 				ui.ButtonLink("/agente", ui.Lg(), ui.Outline(), h.Text("Como funciona")),
@@ -36,7 +36,7 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 		),
 		ui.Grid(
 			h.Section(h.Class("wh-flows mt-flows"),
-				h.H2(h.Class("mt-titulo"), h.Text("O que dá para pedir ao Gui")),
+				h.H2(h.Class("mt-titulo"), h.Text("O que dá para pedir à Gia")),
 				cartaoGuia("hotel_rosewood"),
 				cartaoGuia("restaurantes"),
 				cartaoGuia("le_jardin"),
@@ -50,7 +50,7 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 			),
 			ui.Stack(
 				app.WidgetVoz(app.WidgetVozOpts{
-					Titulo:               "Fale com o Gui",
+					Titulo:               "Fale com a Gia",
 					Descricao:            "Clique, permita o microfone e peça: “quero jantar no Taraz sexta às 20 horas para duas pessoas”. Provedor trocável para comparação.",
 					AgentePadrao:         os.Getenv("ELEVENLABS_MATARAZZO_AGENT_ID"),
 					AgenteCartesiaPadrao: os.Getenv("MATARAZZO_AGENT_ID"),

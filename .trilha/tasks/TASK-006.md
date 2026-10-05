@@ -62,7 +62,7 @@ Religue: `name solicitar_religue_confirmacao`, parameters cpf + pagamento_confir
 Constante `GUIA_CARTESIA` (texto corrido, será renderizado em um `h.Pre` copiável) com o passo a passo do console:
 
 1. Conta em play.cartesia.ai → API Keys → criar chave (`sk_car_...`) → colar em `CARTESIA_API_KEY` no `.env` (só no servidor).
-2. Playground → Agents → Create agent: nome "Wave"; Instructions = o mesmo prompt de sistema da ElevenLabs (página acima — os nomes das ferramentas são idênticos); Initial message = a mesma saudação; Language `pt`; Timezone `America/Sao_Paulo`; LLM padrão sugerido pelo console; Voice = catálogo filtrado em Portuguese (pt-BR) — ouvir e escolher; Audio input: noise suppression `auto`, keyterms `["WaveHub", "WaveTV", "religue", "Pix", "CPF"]`.
+2. Playground → Agents → Create agent — escolher o tipo **Standard Agent** ("Recommended": a Cartesia roda STT+LLM+TTS e o loop de conversa; o Client-Managed é outro desenho, fora de escopo). Configurar: nome "Wave"; Instructions = o mesmo prompt de sistema da ElevenLabs (página acima — os nomes das ferramentas são idênticos); Initial message = a mesma saudação; Language `pt`; Timezone `America/Sao_Paulo`; LLM padrão sugerido pelo console; Voice = catálogo filtrado em Portuguese (pt-BR) — ouvir e escolher; Audio input: noise suppression `auto`, keyterms `["WaveHub", "WaveTV", "religue", "Pix", "CPF"]`.
 3. Tools → criar as três client tools com os payloads abaixo → anexar as três ao agente.
 4. Copiar o `agent_id` do agente → colar no widget (provedor Cartesia) ou em `CARTESIA_AGENT_ID` no `.env`.
 5. Testar: o Playground exercita a conversa; as client tools só disparam no widget (executam no seu navegador).

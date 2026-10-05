@@ -1,7 +1,7 @@
 ---
 id: TASK-004
 title: seletor de provedor no widget + refatoração em provedores
-status: ready
+status: done
 spec: 001-provedor-de-voz-selecionavel-elevenlabs-cartesia
 milestone: m2
 covers:
@@ -13,7 +13,7 @@ acceptance:
 checks:
   - "trilha check && curl -s localhost:3210/ | grep -q wh-provedor"
 created: "2026-10-05T13:01:58Z"
-updated: "2026-10-05T13:03:17Z"
+updated: "2026-10-05T14:08:41Z"
 ---
 
 ### Objetivo

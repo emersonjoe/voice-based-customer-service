@@ -1,7 +1,7 @@
 ---
 id: TASK-001
 title: env e docs do provedor Cartesia
-status: ready
+status: done
 spec: 001-provedor-de-voz-selecionavel-elevenlabs-cartesia
 milestone: m1
 covers:
@@ -13,7 +13,7 @@ acceptance:
 checks:
   - grep -q CARTESIA_API_KEY .env.example && grep -qi cartesia README.md
 created: "2026-10-05T13:01:46Z"
-updated: "2026-10-05T13:03:17Z"
+updated: "2026-10-05T14:08:41Z"
 ---
 
 ### Objetivo

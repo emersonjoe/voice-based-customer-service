@@ -1,0 +1,10 @@
+{
+  "task": "TASK-005",
+  "seq": 1,
+  "kind": "note",
+  "at": "2026-10-05T14:08:14Z",
+  "by": "cli",
+  "exit_code": 0,
+  "passed": true,
+  "note": "Provedor WS implementado (captura PCM 44,1kHz, barge-in, client tools); conexão e2e aguarda CARTESIA_API_KEY do dono"
+}

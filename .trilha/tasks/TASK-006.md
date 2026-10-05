@@ -1,7 +1,7 @@
 ---
 id: TASK-006
 title: guia Cartesia na página /agente
-status: idea
+status: done
 spec: 001-provedor-de-voz-selecionavel-elevenlabs-cartesia
 milestone: m3
 covers:
@@ -14,6 +14,7 @@ acceptance:
 checks:
   - "trilha check && curl -s localhost:3210/agente | grep -ci cartesia | grep -v '^0$'"
 created: "2026-10-05T13:01:58Z"
+updated: "2026-10-05T14:08:53Z"
 ---
 
 ### Objetivo

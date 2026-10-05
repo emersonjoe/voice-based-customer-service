@@ -1,0 +1,10 @@
+{
+  "task": "TASK-002",
+  "seq": 1,
+  "kind": "note",
+  "at": "2026-10-05T14:08:14Z",
+  "by": "cli",
+  "exit_code": 0,
+  "passed": true,
+  "note": "Header CSP contém wss://api.cartesia.ai (verificado via curl)"
+}

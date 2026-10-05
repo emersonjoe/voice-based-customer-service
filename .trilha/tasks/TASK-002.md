@@ -1,7 +1,7 @@
 ---
 id: TASK-002
 title: "CSP: wss da Cartesia no connect-src"
-status: ready
+status: done
 spec: 001-provedor-de-voz-selecionavel-elevenlabs-cartesia
 milestone: m1
 covers:
@@ -12,7 +12,7 @@ acceptance:
 checks:
   - "go build ./... && curl -sI localhost:3210/ | grep -i content-security-policy | grep -q 'wss://api.cartesia.ai'"
 created: "2026-10-05T13:01:46Z"
-updated: "2026-10-05T13:03:17Z"
+updated: "2026-10-05T14:08:41Z"
 ---
 
 ### Objetivo

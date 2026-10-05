@@ -40,6 +40,7 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 		),
 		webhookAlternativo(),
 		agentePrivado(),
+		guiaCartesia(),
 		checklist(),
 	), nil
 }
@@ -140,4 +141,37 @@ func checklist() h.Node {
 // botão .wh-copy com data-copy-target aponta para ele.
 func copiavel(id, texto string) h.Node {
 	return h.Pre(h.ID(id), h.Class("wh-pre"), h.Data("copy", texto), h.Code(h.Text(texto)))
+}
+
+// guiaCartesia é a seção do provedor alternativo: console, payload das
+// três client tools e a nota de segurança do token.
+func guiaCartesia() h.Node {
+	ficha := func(id, titulo, esquema string) h.Node {
+		return ui.Card(
+			ui.CardHeader(ui.CardTitle(titulo)),
+			ui.CardContent(copiavel(id, esquema)),
+			ui.CardFooter(ui.Button(ui.Sm(), ui.Outline(), h.Class("wh-copy"), h.Data("copy-target", id), h.Text("Copiar JSON da tool"))),
+		)
+	}
+	return ui.Stack(
+		ui.Card(
+			ui.CardHeader(
+				ui.CardTitle("Provedor Cartesia — configuração"),
+				ui.CardDescription("Paralelo à ElevenLabs: mesmo prompt, mesmas ferramentas"),
+			),
+			ui.CardContent(
+				copiavel("guia-cartesia", GUIA_CARTESIA),
+			),
+			ui.CardFooter(
+				ui.Button(ui.Sm(), ui.Outline(), h.Class("wh-copy"), h.Data("copy-target", "guia-cartesia"), h.Text("Copiar o passo a passo")),
+				h.P(h.Class("wh-fluxo-texto"), h.Text(
+					" A chave (sk_car_...) fica só no servidor: o widget recebe um access token de 2 minutos cunhado por /api/voz/cartesia.")),
+			),
+		),
+		ui.Grid(
+			ficha("esquema-cartesia-chamado", "abrir_chamado_tecnico", ESQUEMA_CARTESIA_CHAMADO),
+			ficha("esquema-cartesia-segunda-via", "enviar_segunda_via_boleto", ESQUEMA_CARTESIA_SEGUNDA_VIA),
+			ficha("esquema-cartesia-religue", "solicitar_religue_confirmacao", ESQUEMA_CARTESIA_RELIGUE),
+		),
+	)
 }

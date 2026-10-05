@@ -1,0 +1,10 @@
+{
+  "task": "TASK-004",
+  "seq": 1,
+  "kind": "note",
+  "at": "2026-10-05T14:08:14Z",
+  "by": "cli",
+  "exit_code": 0,
+  "passed": true,
+  "note": "Regressão ElevenLabs: sessão completa no browser, 0 violações CSP; troca de provedor persiste e desabilita texto"
+}

@@ -1,7 +1,7 @@
 ---
 id: TASK-003
 title: rota GET /api/voz/cartesia cunhando access token
-status: ready
+status: done
 spec: 001-provedor-de-voz-selecionavel-elevenlabs-cartesia
 milestone: m1
 covers:
@@ -13,7 +13,7 @@ acceptance:
 checks:
   - go test ./app/api/voz/cartesia/ && trilha check
 created: "2026-10-05T13:01:46Z"
-updated: "2026-10-05T13:03:17Z"
+updated: "2026-10-05T14:08:41Z"
 ---
 
 ### Objetivo

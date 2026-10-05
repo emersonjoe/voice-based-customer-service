@@ -13,6 +13,7 @@ import (
 func Page(c *trilha.Ctx) (h.Node, error) {
 	c.SetTitle("WaveHub · Demonstração de atendimento por voz com IA")
 	agenteID := os.Getenv("ELEVENLABS_AGENT_ID")
+	agenteCartesiaID := os.Getenv("CARTESIA_AGENT_ID")
 
 	return ui.Stack(
 		hero(),
@@ -26,7 +27,7 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 				fluxo("circle-check", "Religue com comprovação",
 					"O sinal só volta com o pagamento confirmado: a assistente exige o comprovante antes de abrir o pedido."),
 			),
-			widget(agenteID),
+			widget(agenteID, agenteCartesiaID),
 		),
 		comoFunciona(),
 		roteiroDemo(),
@@ -62,8 +63,9 @@ func fluxo(icone, titulo, texto string) h.Node {
 }
 
 // widget é o cartão do assistente de voz. O comportamento vive em
-// public/voice.js (@elevenlabs/client); este markup é o palco dele.
-func widget(agenteID string) h.Node {
+// public/voice.js e nos provedores de public/provedores/ (ElevenLabs e
+// Cartesia); este markup é o palco dele.
+func widget(agenteID, agenteCartesiaID string) h.Node {
 	var barras []h.Node
 	for i := 1; i <= 7; i++ {
 		barras = append(barras, h.Span(h.Class("wh-bar")))
@@ -78,17 +80,23 @@ func widget(agenteID string) h.Node {
 		),
 		ui.CardContent(
 			h.Div([]h.Node{
-				h.ID("wh-voice"), h.Class("wh-voice"), h.Data("agent-id", agenteID),
+				h.ID("wh-voice"), h.Class("wh-voice"),
+				h.Data("agent-id", agenteID), h.Data("agent-id-cartesia", agenteCartesiaID),
 				h.Div(orb...),
 				h.P(h.ID("wh-status"), h.Class("wh-status"), h.Text("Toque em iniciar para falar")),
 				h.Div(h.Class("wh-controls"),
 					ui.Button(h.ID("wh-toggle"), ui.Lg(), h.Text("Iniciar conversa")),
 				),
-				ui.Field("wh-agent-id", "Agent ID da ElevenLabs",
+				ui.Field("wh-provedor", "Provedor de voz",
+					ui.Select(h.ID("wh-provedor"), h.Name("provedor"), h.Aria("label", "Provedor de voz"),
+						h.Option(h.Value("elevenlabs"), h.Selected(), h.Text("ElevenLabs")),
+						h.Option(h.Value("cartesia"), h.Text("Cartesia"))),
+					ui.Help("Os dois ficam prontos para a demonstração — troque, recarregue e compare.")),
+				ui.Field("wh-agent-id", "Agent ID do provedor",
 					ui.Input(h.ID("wh-agent-id"), h.Name("agente_id"),
 						h.Placeholder("cole aqui o ID do agente publicado"),
 						h.Value(agenteID)),
-					ui.Help("Gerado na plataforma da ElevenLabs — o passo a passo está na página Agente IA. Fica salvo apenas neste navegador."),
+					ui.Help("Gerado na plataforma do provedor — o passo a passo está na página Agente IA. Fica salvo apenas neste navegador."),
 				),
 				h.Div(h.Class("wh-feed-wrap"),
 					h.P(h.Class("wh-feed-title"), h.Text("Ferramentas acionadas")),

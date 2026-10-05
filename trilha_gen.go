@@ -17,6 +17,7 @@ import (
 	app_api_tools_enviar_segunda_via_boleto "github.com/emersonjoe/voice-based-customer-service/app/api/tools/enviar_segunda_via_boleto"
 	app_api_tools_solicitar_religue_confirmacao "github.com/emersonjoe/voice-based-customer-service/app/api/tools/solicitar_religue_confirmacao"
 	app_api_voz_assinada "github.com/emersonjoe/voice-based-customer-service/app/api/voz/assinada"
+	app_api_voz_cartesia "github.com/emersonjoe/voice-based-customer-service/app/api/voz/cartesia"
 	app_painel "github.com/emersonjoe/voice-based-customer-service/app/painel"
 	app_painel_chamado_id_ "github.com/emersonjoe/voice-based-customer-service/app/painel/chamado/id_"
 )
@@ -86,6 +87,12 @@ func newApp() *trilha.App {
 		Pattern: "/api/voz/assinada",
 		Methods: map[string]trilha.HandlerFunc{
 			"GET": app_api_voz_assinada.GET,
+		},
+	})
+	a.Register(trilha.Route{
+		Pattern: "/api/voz/cartesia",
+		Methods: map[string]trilha.HandlerFunc{
+			"GET": app_api_voz_cartesia.GET,
 		},
 	})
 	a.Register(trilha.Route{

@@ -57,6 +57,18 @@ exporte `ELEVENLABS_API_KEY` no servidor: o widget passa a pedir a ele uma
 URL de sessão assinada (curta-viva) em `GET /api/voz/assinada` em vez de
 conectar com o Agent ID direto. A chave nunca chega ao navegador.
 
+### Provedores de voz
+
+O widget tem um seletor **Provedor: ElevenLabs | Cartesia** para comparar
+os dois lado a lado na apresentação. Cada provedor guarda o próprio Agent
+ID no navegador (nada de chaves: a Cartesia também é mediada pelo servidor,
+que cunha um access token de 2 minutos em `GET /api/voz/cartesia`). Para
+usar a Cartesia: crie o Managed Agent em play.cartesia.ai/agents (Standard
+Agent, language `pt`, as três client tools com os mesmos nomes), exporte
+`CARTESIA_API_KEY` e `CARTESIA_AGENT_ID`, selecione o provedor no widget e
+recarregue. Limitação: entrada por texto só existe na ElevenLabs — na
+Cartesia, apenas voz.
+
 ### Variáveis de ambiente
 
 | Variável | Para que serve |
@@ -64,6 +76,8 @@ conectar com o Agent ID direto. A chave nunca chega ao navegador.
 | `TRILHA_SECRET` | Assinatura de cookies e flash (obrigatória fora de dev) — gere com `trilha secret` |
 | `ELEVENLABS_AGENT_ID` | Agent ID público sugerido no widget |
 | `ELEVENLABS_API_KEY` | Chave de API da ElevenLabs, só do servidor — assina a URL de sessão de agentes privados |
+| `CARTESIA_API_KEY` | Chave de API da Cartesia, só do servidor — cunha os access tokens do provedor Cartesia |
+| `CARTESIA_AGENT_ID` | Agent ID do Managed Agent da Cartesia |
 | `DATA_DIR` | Onde o JSON de atendimentos vive (padrão `data/`) |
 
 Copie `.env.example` para `.env` — que está fora do git — e preencha.

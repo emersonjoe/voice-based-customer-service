@@ -1,7 +1,7 @@
 ---
 id: TASK-005
 title: provedor Cartesia por WebSocket no widget
-status: idea
+status: done
 spec: 001-provedor-de-voz-selecionavel-elevenlabs-cartesia
 milestone: m2
 covers:
@@ -16,6 +16,7 @@ acceptance:
 checks:
   - trilha check && trilha vendor --check
 created: "2026-10-05T13:01:58Z"
+updated: "2026-10-05T14:08:53Z"
 ---
 
 ### Objetivo

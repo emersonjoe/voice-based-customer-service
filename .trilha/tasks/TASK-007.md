@@ -1,7 +1,7 @@
 ---
 id: TASK-007
 title: e2e dos dois provedores com roteiro de comparação
-status: idea
+status: verify
 spec: 001-provedor-de-voz-selecionavel-elevenlabs-cartesia
 milestone: m3
 covers:
@@ -15,6 +15,7 @@ acceptance:
 checks:
   - trilha check && trilha vendor --check
 created: "2026-10-05T13:01:58Z"
+updated: "2026-10-05T14:08:53Z"
 ---
 
 ### Objetivo

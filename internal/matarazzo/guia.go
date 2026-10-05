@@ -113,10 +113,9 @@ var Guia = map[Topico]Entrada{
 			"o Capo (bar intimista), o Conde (homenagem a Francesco Matarazzo) e o Positano (costa italiana). " +
 			"Comandado pelos chefs Felipe Rodrigues e Thiago Saldiva, a casa celebra a generosidade italiana: pratos fartos para dividir no centro da mesa.",
 		Menu: []string{
-			"Pizzas que saem do padrão e massas artesanais generosas",
-			"Frutos do mar e clássicos italianos",
-			"Doces e gelatos no Dolce Vita",
+			"Pizze, Pane, Pasta seca, Pasta fresca, Risotti, Secondi, Sobremesa e Cocktail classic",
 			"Pratos a partir de R$ 35; cardápio completo em matacitta.help/cardapio",
+			"Peça um prato pelo nome ('tem carbonara?') ou peça uma categoria ('me mostre as pizzas')",
 		},
 		Dicas: []string{"Não aceita reserva online — chegue cedo ou deixe o nome na lista de espera no local", "Bom para grupos e para ir com crianças"},
 	},

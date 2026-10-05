@@ -5,6 +5,7 @@ package matarazzo
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/emersonjoe/trilha"
 	"github.com/emersonjoe/trilha/h"
@@ -74,8 +75,33 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 				),
 			),
 		),
+		secaoCardapio(),
 		secaoConfig(),
 	), nil
+}
+
+// secaoCardapio renderiza o cardápio completo do Mata Città por categoria,
+// direto do dado estruturado — a mesma fonte que a ferramenta consulta.
+func secaoCardapio() h.Node {
+	categorias := guia.CardapioMataCitta
+	var colunas []h.Node
+	for _, cat := range categorias {
+		var itens []h.Node
+		for _, item := range cat.Itens {
+			itens = append(itens, h.Li(h.Text(item.Nome),
+				h.Span(h.Class("mt-codigo"), h.Text(strconv.Itoa(item.Codigo)))))
+		}
+		colunas = append(colunas, ui.Card(h.Class("mt-card mt-categoria"),
+			ui.CardHeader(ui.CardTitle(cat.Nome), ui.CardDescription(strconv.Itoa(len(cat.Itens))+" itens")),
+			ui.CardContent(h.Ul(append([]h.Node{h.Class("mt-menu")}, itens...)...)),
+		))
+	}
+	return h.Section(h.Class("mt-cardapio"),
+		h.H2(h.Class("mt-titulo"), h.Text("Cardápio do Mata Città")),
+		h.P(h.Class("wh-fluxo-texto"), h.Text(
+			"O cardápio completo, do jeito que a Gia consulta — pergunte por um prato, uma categoria, ou peça sua reserva.")),
+		h.Div(append([]h.Node{h.Class("wh-mt-grid")}, colunas...)...),
+	)
 }
 
 func cartaoGuia(topico guia.Topico) h.Node {

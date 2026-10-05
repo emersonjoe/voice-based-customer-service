@@ -1,0 +1,10 @@
+{
+  "task": "TASK-013",
+  "seq": 5,
+  "kind": "note",
+  "at": "2026-10-05T19:55:04Z",
+  "by": "cli",
+  "exit_code": 0,
+  "passed": true,
+  "note": "Cardápio do Mata Città estruturado (54 itens, 8 categorias) em internal/matarazzo/cardapio.go; consultar_guia ganha busca por prato (sem acento/case) e listagem por categoria; tools atualizadas ao vivo na Cartesia e na ElevenLabs; seção de cardápio na página"
+}

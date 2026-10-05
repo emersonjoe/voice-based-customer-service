@@ -624,3 +624,36 @@
 .mt-page .ui-help {
   color: rgb(232 225 215 / 75%);
 }
+
+/* cardápio do Mata Città */
+.wh-mt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+
+.mt-categoria .ui-card-content { padding-top: 0.25rem; }
+
+.mt-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.mt-menu li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  color: var(--mt-creme);
+}
+
+.mt-codigo {
+  font-size: 0.7rem;
+  color: rgb(232 225 215 / 45%);
+  font-variant-numeric: tabular-nums;
+}

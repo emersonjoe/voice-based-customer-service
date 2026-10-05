@@ -35,7 +35,7 @@ const PRIMEIRA_MATARAZZO = `Olá! Aqui é a Gia, concierge da Cidade Matarazzo. 
 const ESQUEMA_MT_GUIA = `{
   "type": "client",
   "name": "consultar_guia_matarazzo",
-  "description": "Consulta o guia da Cidade Matarazzo: o complexo, o hotel Rosewood São Paulo, os restaurantes Le Jardin, Blaise, Taraz e Rabo di Galo, o restaurante italiano Mata Città (também pronunciado 'Mata Citta' ou 'o italiano'), as lojas, os eventos e como chegar. Chame antes de responder qualquer pergunta sobre o complexo. Se o cliente pronunciar os nomes de formas variadas ('Mata Sita', 'o italiano', 'Rosewood', 'o hotel'), associe ao tópico certo.",
+  "description": "Consulta o guia da Cidade Matarazzo e o cardápio do Mata Città: o complexo, o hotel Rosewood São Paulo, os restaurantes Le Jardin, Blaise, Taraz e Rabo di Galo, o restaurante italiano Mata Città (também pronunciado 'Mata Citta' ou 'o italiano'), as lojas, os eventos e como chegar. Chame antes de responder qualquer pergunta sobre o complexo. Para pratos do Mata Città, use busca (ex.: 'carbonara') ou categoria ('Pizze', 'Pasta seca'...). Pronúncias variadas ('Mata Sita', 'o italiano') mapeiam ao tópico certo.",
   "pre_tool_speech": "auto",
   "execution_mode": "immediate",
   "expects_response": true,
@@ -43,7 +43,9 @@ const ESQUEMA_MT_GUIA = `{
   "parameters": {
     "type": "object",
     "properties": {
-      "topico": { "type": "string", "enum": ["complexo", "hotel_rosewood", "restaurantes", "le_jardin", "blaise", "taraz", "rabo_di_galo", "mata_citta", "lojas", "eventos", "como_chegar"], "description": "Tópico do guia: complexo (visão geral), hotel_rosewood, restaurantes (visão geral), le_jardin, blaise, taraz, rabo_di_galo, mata_citta (restaurante italiano), lojas, eventos, como_chegar" }
+      "topico": { "type": "string", "enum": ["complexo", "hotel_rosewood", "restaurantes", "le_jardin", "blaise", "taraz", "rabo_di_galo", "mata_citta", "lojas", "eventos", "como_chegar"], "description": "Tópico do guia: complexo (visão geral), hotel_rosewood, restaurantes (visão geral), le_jardin, blaise, taraz, rabo_di_galo, mata_citta (restaurante italiano), lojas, eventos, como_chegar" },
+      "busca": { "type": "string", "description": "Prato ou ingrediente para buscar no cardápio do Mata Città (ex.: 'carbonara', 'trufa') — use com topico=mata_citta" },
+      "categoria": { "type": "string", "enum": ["Pizze", "Pane", "Pasta seca", "Pasta fresca", "Risotti", "Secondi", "Sobremesa", "Cocktail classic"], "description": "Categoria do cardápio do Mata Città para listar — use com topico=mata_citta" }
     },
     "required": ["topico"]
   }

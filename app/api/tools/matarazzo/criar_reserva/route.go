@@ -46,12 +46,16 @@ func POST(c *trilha.Ctx) error {
 
 	switch {
 	case !matarazzo.LocalReservavel(local):
-		if local == "mata_citta" {
+		switch local {
+		case "mata_citta":
 			return c.JSON(http.StatusOK, falha("sem_reserva_online",
 				"O Mata Città não aceita reserva online — a entrada é por lista de espera no local. Sugira chegar cedo ou deixar o nome no balcão."))
+		case "gui":
+			return c.JSON(http.StatusOK, falha("tipo_invalido",
+				"Para reservas, use os locais da lista: hotel_rosewood, le_jardin, blaise, taraz, rabo_di_galo e lavva."))
 		}
 		return c.JSON(http.StatusOK, falha("tipo_invalido",
-			"Os locais reserváveis são: hotel_rosewood, le_jardin, blaise, taraz e rabo_di_galo."))
+			"Os locais reserváveis são: hotel_rosewood, le_jardin, blaise, taraz, rabo_di_galo e lavva."))
 	case len(nome) < 3 || len(nome) > 120:
 		return c.JSON(http.StatusOK, falha("nome_invalido",
 			"Preciso do nome completo do hóspede para a reserva."))

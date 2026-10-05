@@ -20,6 +20,21 @@ type CategoriaCardapio struct {
 	Itens []ItemPrato
 }
 
+// Restaurantes que têm cardápio estruturado nesta POC.
+const (
+	RestauranteMataCitta = "mata_citta"
+	RestauranteLavva     = "lavva"
+)
+
+// NomesDeExibicao liga o identificador ao nome de exibição.
+var NomesDeExibicao = map[string]string{
+	RestauranteMataCitta: "Mata Città",
+	RestauranteLavva:     "LAVVA",
+}
+
+// Cardapios indexa os cardápios por restaurante.
+var Cardapios = map[string][]CategoriaCardapio{}
+
 // CardapioMataCitta é o cardápio completo, por categoria.
 var CardapioMataCitta = []CategoriaCardapio{
 	{Nome: "Pizze", Itens: []ItemPrato{
@@ -63,20 +78,21 @@ var CardapioMataCitta = []CategoriaCardapio{
 	}},
 }
 
-// CategoriasCardapio devolve os nomes das categorias, na ordem do cardápio.
-func CategoriasCardapio() []string {
-	nomes := make([]string, 0, len(CardapioMataCitta))
-	for _, c := range CardapioMataCitta {
+// CategoriasCardapio devolve os nomes das categorias de um restaurante,
+// na ordem do cardápio.
+func CategoriasCardapio(restaurante string) []string {
+	var nomes []string
+	for _, c := range Cardapios[restaurante] {
 		nomes = append(nomes, c.Nome)
 	}
 	return nomes
 }
 
 // CategoriaPorNome devolve a categoria pelo nome (sem diferenciar maiúsculas
-// nem acentos) — "pasta seca", "Pizze" e "RISOTTI" funcionam.
-func CategoriaPorNome(nome string) (CategoriaCardapio, bool) {
+// nem acentos) — "pasta seca", "Pizze" e "cortes de carne" funcionam.
+func CategoriaPorNome(restaurante, nome string) (CategoriaCardapio, bool) {
 	alvo := Normaliza(nome)
-	for _, c := range CardapioMataCitta {
+	for _, c := range Cardapios[restaurante] {
 		if Normaliza(c.Nome) == alvo {
 			return c, true
 		}
@@ -91,15 +107,16 @@ type PratoEncontrado struct {
 	Nome      string
 }
 
-// BuscarNoCardapio procura pratos pelo nome (contém, sem diferenciar
-// maiúsculas nem acentos): "carbonara" acha o da pasta e o da pizza.
-func BuscarNoCardapio(termo string) []PratoEncontrado {
+// BuscarPratos procura pratos pelo nome num restaurante (contém, sem
+// diferenciar maiúsculas nem acentos): "carbonara" acha o da pasta e o da
+// pizza; "wagyu" acha os cortes do LAVVA.
+func BuscarPratos(restaurante, termo string) []PratoEncontrado {
 	alvo := Normaliza(termo)
 	if alvo == "" {
 		return nil
 	}
 	var achados []PratoEncontrado
-	for _, c := range CardapioMataCitta {
+	for _, c := range Cardapios[restaurante] {
 		for _, item := range c.Itens {
 			if strings.Contains(Normaliza(item.Nome), alvo) {
 				achados = append(achados, PratoEncontrado{Categoria: c.Nome, Codigo: item.Codigo, Nome: item.Nome})
@@ -129,4 +146,39 @@ func Normaliza(s string) string {
 		}
 	}
 	return string(saida)
+}
+
+// CardapioLavva é o cardápio do LAVVA, o steakhouse coreano do complexo,
+// por categoria.
+var CardapioLavva = []CategoriaCardapio{
+	{Nome: "Cortes de carne", Itens: []ItemPrato{
+		{8143, "Bife de Ancho Angus"}, {8144, "Arroz de Brócolis"}, {8147, "Mil Folhas Batatas"},
+		{8148, "Bibimbap"}, {8154, "Chorizo Wagyu"}, {8155, "Conjunto de Banchan (12 unidades, sendo 1 de cada)"},
+		{8159, "Denver Steak Angus"}, {8160, "Farofa de Allium"}, {8163, "Filet Mignon Black Angus"},
+		{8164, "Flat Iron Wagyu 300g"}, {8166, "Galbi (assado de tira marinado)"},
+		{8172, "Japchae Macarrão de Batata Doce"}, {8174, "Pão de Alho"},
+		{8178, "Picanha Angus"}, {8180, "Porterhouse Taurus Reserve"},
+		{8395, "Chorizo Angus"}, {8396, "Bife de Ancho Wagyu"}, {8397, "Picanha Wagyu"},
+		{8398, "Denver Steak Wagyu"}, {8399, "Rib Cap Wagyu"},
+	}},
+	{Nome: "Sobremesas", Itens: []ItemPrato{
+		{8157, "Gergelim Negro"}, {8175, "Pavlova"}, {8176, "Milho Tostado"},
+		{8177, "Mamuri"}, {8401, "Kokoneot Beluga"}, {8402, "Kokoneot Ossetra"},
+		{8403, "Kokoneot Baeri"},
+	}},
+	{Nome: "Signature cocktails", Itens: []ItemPrato{
+		{8025, "Amber Hearth"}, {8026, "Espresso Bori Cha"}, {8027, "Golden Sting"},
+		{8028, "Goryeo Palace"}, {8029, "Honeydew"}, {8030, "Jeju Garden"},
+		{8031, "Jirisan Collins"}, {8032, "K Pop"}, {8035, "Red Snapper"},
+		{8036, "Margarita Gochujang"}, {8039, "Naju Haiboru"}, {8043, "Summer Bloom"},
+	}},
+	{Nome: "Classics", Itens: []ItemPrato{
+		{1037, "Caipiroska"}, {1114, "Fitzgerald"}, {1773, "Negroni"},
+		{2768, "Boulevardier"}, {2769, "Smoked Boulevardier"}, {2771, "Caipirinha"},
+	}},
+}
+
+func init() {
+	Cardapios[RestauranteMataCitta] = CardapioMataCitta
+	Cardapios[RestauranteLavva] = CardapioLavva
 }

@@ -53,15 +53,23 @@ func POST(c *trilha.Ctx) error {
 		})
 	}
 
-	// Cardápio do Mata Città: busca por prato ou listagem por categoria.
-	if topico == matarazzo.TopicoMataCitta {
+	// Cardápios (Mata Città e LAVVA): busca por prato ou listagem por
+	// categoria.
+	var restauranteMenu string
+	switch topico {
+	case matarazzo.TopicoMataCitta:
+		restauranteMenu = matarazzo.RestauranteMataCitta
+	case matarazzo.TopicoLavva:
+		restauranteMenu = matarazzo.RestauranteLavva
+	}
+	if restauranteMenu != "" {
 		if busca := strings.TrimSpace(apiutil.Texto(corpo, "busca")); busca != "" {
-			return responderBusca(c, busca)
+			return responderBusca(c, restauranteMenu, busca)
 		}
 		if categoria := strings.TrimSpace(apiutil.Texto(corpo, "categoria")); categoria != "" {
-			return responderCategoria(c, categoria)
+			return responderCategoria(c, restauranteMenu, categoria)
 		}
-		return responderMenuResumo(c)
+		return responderMenuResumo(c, restauranteMenu)
 	}
 
 	entrada := matarazzo.Guia[topico]
@@ -79,14 +87,15 @@ func POST(c *trilha.Ctx) error {
 }
 
 // responderBusca devolve os pratos que casam com o termo, para o agente
-// responder "vocês têm carbonara?" com precisão.
-func responderBusca(c *trilha.Ctx, busca string) error {
-	achados := matarazzo.BuscarNoCardapio(busca)
+// responder "vocês têm carbonara?" e "vocês têm wagyu?" com precisão.
+func responderBusca(c *trilha.Ctx, restaurante, busca string) error {
+	achados := matarazzo.BuscarPratos(restaurante, busca)
 	if len(achados) == 0 {
 		return c.JSON(http.StatusOK, resposta{
-			Status:   "sem_resultados",
-			Topico:   "mata_citta",
-			Mensagem: "Não achei \"" + busca + "\" no cardápio do Mata Città. As categorias são: " + strings.Join(matarazzo.CategoriasCardapio(), ", ") + ".",
+			Status:     "sem_resultados",
+			Topico:     restaurante,
+			Categorias: matarazzo.CategoriasCardapio(restaurante),
+			Mensagem:   "Não achei \"" + busca + "\" no cardápio do " + matarazzo.NomesDeExibicao[restaurante] + ". As categorias são: " + strings.Join(matarazzo.CategoriasCardapio(restaurante), ", ") + ".",
 		})
 	}
 	nomes := make([]string, 0, len(achados))
@@ -96,50 +105,50 @@ func responderBusca(c *trilha.Ctx, busca string) error {
 	c.Log().Info("ferramenta consultar_guia_matarazzo: busca no cardápio", "termo", busca, "achados", len(achados))
 	return c.JSON(http.StatusOK, resposta{
 		Status:     "sucesso",
-		Topico:     "mata_citta",
+		Topico:     restaurante,
 		Resultados: achados,
-		Categorias: matarazzo.CategoriasCardapio(),
-		Mensagem:   "Achei " + plural(len(achados)) + " no cardápio do Mata Città: " + strings.Join(nomes, ", ") + ".",
+		Categorias: matarazzo.CategoriasCardapio(restaurante),
+		Mensagem:   "Achei " + plural(len(achados)) + " no cardápio do " + matarazzo.NomesDeExibicao[restaurante] + ": " + strings.Join(nomes, ", ") + ".",
 	})
 }
 
-func responderCategoria(c *trilha.Ctx, categoria string) error {
-	cat, ok := matarazzo.CategoriaPorNome(categoria)
+func responderCategoria(c *trilha.Ctx, restaurante, categoria string) error {
+	cat, ok := matarazzo.CategoriaPorNome(restaurante, categoria)
 	if !ok {
 		return c.JSON(http.StatusOK, resposta{
 			Status:     "categoria_invalida",
-			Topico:     "mata_citta",
-			Categorias: matarazzo.CategoriasCardapio(),
-			Mensagem:   "Não tenho a categoria \"" + categoria + "\". As categorias do cardápio são: " + strings.Join(matarazzo.CategoriasCardapio(), ", ") + ".",
+			Topico:     restaurante,
+			Categorias: matarazzo.CategoriasCardapio(restaurante),
+			Mensagem:   "Não tenho a categoria \"" + categoria + "\". As categorias do cardápio são: " + strings.Join(matarazzo.CategoriasCardapio(restaurante), ", ") + ".",
 		})
 	}
 	nomes := make([]string, 0, len(cat.Itens))
 	for _, item := range cat.Itens {
 		nomes = append(nomes, item.Nome)
 	}
-	c.Log().Info("ferramenta consultar_guia_matarazzo: categoria", "categoria", cat.Nome)
+	c.Log().Info("ferramenta consultar_guia_matarazzo: categoria", "restaurante", restaurante, "categoria", cat.Nome)
 	return c.JSON(http.StatusOK, resposta{
 		Status:     "sucesso",
-		Topico:     "mata_citta",
-		Titulo:     "Mata Città — " + cat.Nome,
+		Topico:     restaurante,
+		Titulo:     matarazzo.NomesDeExibicao[restaurante] + " — " + cat.Nome,
 		Itens:      cat.Itens,
-		Categorias: matarazzo.CategoriasCardapio(),
+		Categorias: matarazzo.CategoriasCardapio(restaurante),
 		Mensagem:   "Na categoria " + cat.Nome + " temos " + strconv.Itoa(len(cat.Itens)) + ": " + strings.Join(nomes, ", ") + ".",
 	})
 }
 
 // responderMenuResumo devolve a visão geral: contagens por categoria, sem
 // despejar os 54 itens na fala do agente.
-func responderMenuResumo(c *trilha.Ctx) error {
+func responderMenuResumo(c *trilha.Ctx, restaurante string) error {
 	var resumo []string
-	for _, cat := range matarazzo.CardapioMataCitta {
+	for _, cat := range matarazzo.Cardapios[restaurante] {
 		resumo = append(resumo, cat.Nome+" ("+strconv.Itoa(len(cat.Itens))+")")
 	}
 	return c.JSON(http.StatusOK, resposta{
 		Status:     "sucesso",
-		Topico:     "mata_citta",
-		Categorias: matarazzo.CategoriasCardapio(),
-		Mensagem: "O cardápio do Mata Città tem oito categorias: " + strings.Join(resumo, ", ") +
+		Topico:     restaurante,
+		Categorias: matarazzo.CategoriasCardapio(restaurante),
+		Mensagem: "O cardápio do " + matarazzo.NomesDeExibicao[restaurante] + " tem estas categorias: " + strings.Join(resumo, ", ") +
 			". Posso listar uma categoria ou buscar um prato pelo nome — pergunte o que o cliente quer.",
 	})
 }

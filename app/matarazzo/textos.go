@@ -20,7 +20,7 @@ Você é a Gia, concierge de voz da Cidade Matarazzo — o complexo de luxo na B
 
 1. APRESENTAR O COMPLEXO — Quando o visitante pedir recomendações ou informações (hotel, restaurantes, Mata Città, lojas, eventos, como chegar), chame 'consultar_guia_matarazzo' com o tópico certo — há tópico próprio para Le Jardin, Blaise, Taraz e Rabo di Galo — e responda com o conteúdo devolvido, incluindo horário e destaques do menu quando houver.
 
-2. RESERVAR — Para reservar o hotel Rosewood ou os restaurantes Le Jardin, Blaise, Taraz e Rabo di Galo, confirme com o visitante o local, a data, o horário, o número de pessoas e o nome para a reserva; então chame 'criar_reserva_matarazzo' e informe o protocolo devolvido.
+2. RESERVAR — Para reservar o hotel Rosewood, os restaurantes Le Jardin, Blaise, Taraz e Rabo di Galo, ou o LAVVA (steakhouse coreano), confirme com o visitante o local, a data, o horário, o número de pessoas e o nome para a reserva; então chame 'criar_reserva_matarazzo' e informe o protocolo devolvido.
 
 3. MATA CITTÀ — O Mata Città não aceita reserva online: explique que a entrada é por lista de espera no local e sugira chegar cedo.
 
@@ -43,7 +43,7 @@ const ESQUEMA_MT_GUIA = `{
   "parameters": {
     "type": "object",
     "properties": {
-      "topico": { "type": "string", "enum": ["complexo", "hotel_rosewood", "restaurantes", "le_jardin", "blaise", "taraz", "rabo_di_galo", "mata_citta", "lojas", "eventos", "como_chegar"], "description": "Tópico do guia: complexo (visão geral), hotel_rosewood, restaurantes (visão geral), le_jardin, blaise, taraz, rabo_di_galo, mata_citta (restaurante italiano), lojas, eventos, como_chegar" },
+      "topico": { "type": "string", "enum": ["complexo", "hotel_rosewood", "restaurantes", "le_jardin", "blaise", "taraz", "rabo_di_galo", "mata_citta", "lavva", "lojas", "eventos", "como_chegar"], "description": "Tópico do guia: complexo (visão geral), hotel_rosewood, restaurantes (visão geral), le_jardin, blaise, taraz, rabo_di_galo, mata_citta (restaurante italiano), lavva (steakhouse coreano), lojas, eventos, como_chegar" },
       "busca": { "type": "string", "description": "Prato ou ingrediente para buscar no cardápio do Mata Città (ex.: 'carbonara', 'trufa') — use com topico=mata_citta" },
       "categoria": { "type": "string", "enum": ["Pizze", "Pane", "Pasta seca", "Pasta fresca", "Risotti", "Secondi", "Sobremesa", "Cocktail classic"], "description": "Categoria do cardápio do Mata Città para listar — use com topico=mata_citta" }
     },
@@ -62,7 +62,7 @@ const ESQUEMA_MT_RESERVA = `{
   "parameters": {
     "type": "object",
     "properties": {
-      "tipo":         { "type": "string", "enum": ["hotel_rosewood", "le_jardin", "blaise", "taraz", "rabo_di_galo"], "description": "Onde reservar" },
+      "tipo":         { "type": "string", "enum": ["hotel_rosewood", "le_jardin", "blaise", "taraz", "rabo_di_galo", "lavva"], "description": "Onde reservar (lavva = steakhouse coreano do complexo)" },
       "data":         { "type": "string", "description": "Data da reserva no formato AAAA-MM-DD" },
       "horario":      { "type": "string", "description": "Horário no formato HH:MM" },
       "pessoas":      { "type": "integer", "description": "Número de pessoas (1 a 12)" },

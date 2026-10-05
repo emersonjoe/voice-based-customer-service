@@ -45,6 +45,7 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 				cartaoGuia("taraz"),
 				cartaoGuia("rabo_di_galo"),
 				cartaoGuia("mata_citta"),
+				cartaoGuia("lavva"),
 				cartaoGuia("lojas"),
 				cartaoGuia("eventos"),
 				cartaoGuia("como_chegar"),
@@ -75,15 +76,21 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 				),
 			),
 		),
-		secaoCardapio(),
+		secaoCardapio("Cardápio do Mata Città",
+			"O cardápio completo, do jeito que a Gia consulta — pergunte por um prato, uma categoria, ou peça sua reserva.",
+			guia.RestauranteMataCitta),
+		secaoCardapio("Cardápio do LAVVA",
+			"O steakhouse coreano: cortes Angus e Wagyu na brasa, da brasa à coquetelaria assinatura.",
+			guia.RestauranteLavva),
 		secaoConfig(),
 	), nil
 }
 
-// secaoCardapio renderiza o cardápio completo do Mata Città por categoria,
-// direto do dado estruturado — a mesma fonte que a ferramenta consulta.
-func secaoCardapio() h.Node {
-	categorias := guia.CardapioMataCitta
+// secaoCardapio renderiza o cardápio completo de um restaurante por
+// categoria, direto do dado estruturado — a mesma fonte que a ferramenta
+// consulta.
+func secaoCardapio(titulo, subtitulo, restaurante string) h.Node {
+	categorias := guia.Cardapios[restaurante]
 	var colunas []h.Node
 	for _, cat := range categorias {
 		var itens []h.Node
@@ -97,9 +104,8 @@ func secaoCardapio() h.Node {
 		))
 	}
 	return h.Section(h.Class("mt-cardapio"),
-		h.H2(h.Class("mt-titulo"), h.Text("Cardápio do Mata Città")),
-		h.P(h.Class("wh-fluxo-texto"), h.Text(
-			"O cardápio completo, do jeito que a Gia consulta — pergunte por um prato, uma categoria, ou peça sua reserva.")),
+		h.H2(h.Class("mt-titulo"), h.Text(titulo)),
+		h.P(h.Class("wh-fluxo-texto"), h.Text(subtitulo)),
 		h.Div(append([]h.Node{h.Class("wh-mt-grid")}, colunas...)...),
 	)
 }

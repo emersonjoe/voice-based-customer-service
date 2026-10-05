@@ -1,0 +1,10 @@
+{
+  "task": "TASK-013",
+  "seq": 6,
+  "kind": "note",
+  "at": "2026-10-05T20:02:12Z",
+  "by": "cli",
+  "exit_code": 0,
+  "passed": true,
+  "note": "LAVVA (steakhouse coreano): cardápio estruturado (4 categorias, 45 itens), tópico no guia, reservável (RS-), busca/categoria generalizadas por restaurante nas rotas; tools e prompts atualizados ao vivo na Cartesia e na ElevenLabs"
+}

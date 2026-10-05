@@ -14,6 +14,7 @@ const (
 	TopicoComplexo     Topico = "complexo"
 	TopicoHotel        Topico = "hotel_rosewood"
 	TopicoRestaurantes Topico = "restaurantes"
+	TopicoLavva        Topico = "lavva"
 	TopicoLeJardin     Topico = "le_jardin"
 	TopicoBlaise       Topico = "blaise"
 	TopicoTaraz        Topico = "taraz"
@@ -51,9 +52,24 @@ var Guia = map[Topico]Entrada{
 	},
 	TopicoRestaurantes: {
 		Titulo: "Restaurantes do complexo",
-		Texto: "São dois mundos: dentro do hotel Rosewood ficam o Le Jardin, o Blaise, o Taraz e o bar Rabo di Galo; " +
-			"e o Mata Città, o grande espaço italiano do complexo, com sete ambientes. Pergunte qual deles o visitante quer conhecer em detalhe.",
+		Texto: "São três mundos: dentro do hotel Rosewood ficam o Le Jardin, o Blaise, o Taraz e o bar Rabo di Galo; " +
+			"o Mata Città é o grande espaço italiano do complexo, com sete ambientes; e o LAVVA é o steakhouse coreano, " +
+			"com cortes Angus e Wagyu na brasa. Pergunte qual deles o visitante quer conhecer em detalhe.",
 		Dicas: []string{"Reserve com antecedência para fim de semana", "Posso detalhar qualquer um e já fazer a reserva"},
+	},
+	TopicoLavva: {
+		Titulo:  "LAVVA — steakhouse coreano",
+		Horario: "Almoço e jantar",
+		Texto: "O LAVVA é o steakhouse coreano do complexo: cortes Angus e Wagyu na brasa (picanha, ancho, Denver, " +
+			"Rib Cap, Galbi marinado), acompanhamentos da cozinha coreana como Bibimbap, Japchae e o conjunto de Banchan, " +
+			"e coquetelaria autoral com toque coreano — da Margarita Gochujang ao Jeju Garden.",
+		Menu: []string{
+			"Cortes na brasa: Angus, Wagyu e Taurus Reserve",
+			"Bibimbap, Japchae, Banchan e acompanhamentos",
+			"Signature cocktails e clássicos",
+			"Reservável pela nossa ferramenta",
+		},
+		Dicas: []string{"Bom para grupos: os cortes vêm para dividir no centro da mesa", "Reservável pela nossa ferramenta"},
 	},
 	TopicoLeJardin: {
 		Titulo:  "Le Jardin — grand café do Rosewood (24 horas)",
@@ -146,6 +162,7 @@ var RestaurantesReservaveis = []string{
 	"blaise",
 	"taraz",
 	"rabo_di_galo",
+	"lavva",
 }
 
 // TopicoValido diz se o tópico existe no guia.
@@ -171,6 +188,7 @@ func Rotulo(local string) string {
 		"blaise":         "Blaise",
 		"taraz":          "Taraz",
 		"rabo_di_galo":   "Rabo di Galo",
+		"lavva":          "LAVVA",
 	}
 	return rotulos[local]
 }

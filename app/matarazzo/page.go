@@ -50,9 +50,9 @@ func Page(c *trilha.Ctx) (h.Node, error) {
 			),
 			ui.Stack(
 				app.WidgetVoz(app.WidgetVozOpts{
-					ProvedorFixo:         "cartesia",
 					Titulo:               "Fale com o Gui",
-					Descricao:            "Clique, permita o microfone e peça: “quero jantar no Taraz sexta às 20 horas para duas pessoas”.",
+					Descricao:            "Clique, permita o microfone e peça: “quero jantar no Taraz sexta às 20 horas para duas pessoas”. Provedor trocável para comparação.",
+					AgentePadrao:         os.Getenv("ELEVENLABS_MATARAZZO_AGENT_ID"),
 					AgenteCartesiaPadrao: os.Getenv("MATARAZZO_AGENT_ID"),
 				}),
 				ui.Card(h.Class("mt-card"),
@@ -110,7 +110,7 @@ func secaoConfig() h.Node {
 		ui.Card(h.Class("mt-card"),
 			ui.CardHeader(
 				ui.CardTitle("Configurar o agente (já configurado nesta POC)"),
-				ui.CardDescription("Standard Agent na Cartesia · voz Helena (pt-BR) · timezone America/Sao_Paulo"),
+				ui.CardDescription("Criado via API nos dois provedores · Cartesia: voz Helena, tz America/Sao_Paulo · ElevenLabs: voz do agente Wave, LLM do Wave"),
 			),
 			ui.CardContent(
 				copiavel("mt-prompt", PROMPT_MATARAZZO),

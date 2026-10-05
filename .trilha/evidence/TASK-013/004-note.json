@@ -1,0 +1,10 @@
+{
+  "task": "TASK-013",
+  "seq": 4,
+  "kind": "note",
+  "at": "2026-10-05T19:18:43Z",
+  "by": "cli",
+  "exit_code": 0,
+  "passed": true,
+  "note": "Provedor ElevenLabs para o Guia Matarazzo: agente criado via API (agent_7001m46qrcpjf9vt458dc9yr77mh, voz/LLM do Wave, pt-br, 2 client tools inline), seletor de provedor ativo em /matarazzo, dynamic variable data_hoje injetada pelo widget resolve datas relativas; sessão validada no browser (saudação, 0 violações CSP)"
+}

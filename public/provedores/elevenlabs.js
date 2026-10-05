@@ -61,6 +61,8 @@ export function criarElevenLabs(ctx) {
       abrir_chamado_tecnico: chamar("/api/tools/abrir_chamado_tecnico", "Chamado técnico aberto"),
       enviar_segunda_via_boleto: chamar("/api/tools/enviar_segunda_via_boleto", "Segunda via enviada"),
       solicitar_religue_confirmacao: chamar("/api/tools/solicitar_religue_confirmacao", "Religue solicitado"),
+      consultar_guia_matarazzo: chamar("/api/tools/matarazzo/consultar_guia", "Guia Matarazzo consultado"),
+      criar_reserva_matarazzo: chamar("/api/tools/matarazzo/criar_reserva", "Reserva Matarazzo criada"),
     };
   }
 
@@ -88,6 +90,9 @@ export function criarElevenLabs(ctx) {
         convo = await Conversation.startSession({
           ...sessao,
           clientTools: ferramentas(),
+          // datas relativas ("amanhã") dependem do dia de hoje: injetado na
+          // sessão e usado pelos prompts via {{data_hoje}}
+          dynamicVariables: { data_hoje: new Date().toLocaleDateString("pt-BR") },
           onConnect: () => {
             ctx.cena("ativo", "Conectado — pode falar.");
             animar();

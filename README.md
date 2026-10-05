@@ -66,7 +66,7 @@ conectar com o Agent ID direto. A chave nunca chega ao navegador.
 | Agente | Página | Provedor | Agent ID (env) | Fluxos |
 |---|---|---|---|---|
 | **WaveHub** | `/` | ElevenLabs + Cartesia | `ELEVENLABS_AGENT_ID` / `CARTESIA_AGENT_ID` | chamado técnico, segunda via, religue |
-| **Guia Matarazzo** | `/matarazzo` | Cartesia | `MATARAZZO_AGENT_ID` | guia do complexo, reservas (hotel Rosewood e restaurantes) |
+| **Guia Matarazzo** | `/matarazzo` | ElevenLabs + Cartesia | `ELEVENLABS_MATARAZZO_AGENT_ID` / `MATARAZZO_AGENT_ID` | guia do complexo, reservas (hotel Rosewood e restaurantes) |
 
 O painel `/painel` separa os atendimentos por agente: chips com contagem,
 filtro `?agente=`, coluna e badge por agente. Reservas usam o tipo
